@@ -19,19 +19,14 @@ def train_barlow_twins(encoder, projector, dataloader, criterion, optimizer, dev
     total_loss = 0
     for bulk, dist1, dist2, stage_gt in dataloader:
         bulk, dist1, dist2, stage_gt = bulk.to(device), dist1.to(device), dist2.to(device), stage_gt.to(device)
-        
-        z_bulk = encoder(bulk)
+
         z1 = encoder(dist1)
         z2 = encoder(dist2)
-        
-        p_bulk = projector(z_bulk)
+
         p1 = projector(z1)
         p2 = projector(z2)
-        
-        loss1 = criterion(p_bulk, p1)
-        loss2 = criterion(p_bulk, p2)
-        loss3 = criterion(p1, p2)
-        loss = (loss1 + loss2 + loss3) / 3
+
+        loss = criterion(p1, p2)
         
         total_loss += loss.item()
         

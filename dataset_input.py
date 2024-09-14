@@ -50,11 +50,11 @@ def advanced_distort_gen(bulk_data, sc_df, lambda_noise, sample_size=1000):
         # Calculate mean
         mean_values = torch.mean(sampled_cells, dim=0)
         
-        # Generate noise
-        noise = torch.normal(mean=bulk_tensor.mean(), std=bulk_tensor.std(), size=mean_values.shape, device=device)
+        # # Generate noise
+        # noise = torch.normal(mean=bulk_tensor.mean(), std=bulk_tensor.std(), size=mean_values.shape, device=device)
         
         # Combine bulk data, mean values, and noise
-        distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values + lambda_noise * noise
+        distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values
         distortions.append(distorted)
     
     distortions_tensor = torch.stack(distortions)
@@ -146,7 +146,7 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     bulk = bulk.loc[common_index]
     print(f"After filtering: Bulk data shape: {bulk.shape}, Number of patients: {len(overall_stages)}")
 
-    distortion1 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0)
+    distortion1 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1)
     distortion2 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1)
     print("Distortions generated.")
 
