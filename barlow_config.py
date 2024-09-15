@@ -5,11 +5,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 config = {
     'seed': 42,
     'batchsize': 32,
-    'output_dim': 128,
+    'output_dim': 64,
     'project_dim': 1024,
     'learning_rate': 1e-4,
     'weight_decay' : 1e-3,
-    'num_epochs': 5000,
+    'num_epochs': 10000,
     'loss_lambda_param' : 0.005,
     'model_save_path': './model_checkpoints',
     'fra_save_path': './fra_pre',

@@ -7,13 +7,27 @@ class Encoder(nn.Module):
     def __init__(self, input_dim, output_dim):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(input_dim, 512),
+            nn.Linear(input_dim, 1024),  # 更大的隐藏层
+            nn.BatchNorm1d(1024),
+            nn.LeakyReLU(),
+
+            nn.Linear(1024, 512),
             nn.BatchNorm1d(512),
-            nn.ReLU(),
+            nn.LeakyReLU(),
+
+            nn.Linear(512, 512),  # 添加更多层
+            nn.BatchNorm1d(512),
+            nn.LeakyReLU(),
+
             nn.Linear(512, 256),
             nn.BatchNorm1d(256),
-            nn.ReLU(),
-            nn.Linear(256, output_dim)
+            nn.LeakyReLU(),
+
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
+            nn.LeakyReLU(),
+
+            nn.Linear(128, output_dim)
         )
 
     def forward(self, x):
