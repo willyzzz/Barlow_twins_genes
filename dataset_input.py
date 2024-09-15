@@ -6,30 +6,25 @@ import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
+import random
+from sklearn.preprocessing import MinMaxScaler
+from barlow_config import *
 
-np.random.seed(42)
+def set_seed(seed_value):
+    torch.manual_seed(seed_value)
+    torch.cuda.manual_seed(seed_value)
+    torch.cuda.manual_seed_all(seed_value)
+    np.random.seed(seed_value)
+    random.seed(seed_value)
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 ### sampling single cell data as distortion input
-def distort_gen(n_repeats, sc_df, lambda_noise, noise_mean=0, noise_std=1, sample_size=1000, ):
 
-    average_values_list = []
 
-    for _ in range(n_repeats):
-        # randomly choose 1000 cells
-        sampled_cells = sc_df.sample(n=sample_size, replace=False)
-        # averge value of these cells
-        mean_values = sampled_cells.mean()
-        noise = np.random.normal(loc=noise_mean, scale=noise_std, size=len(mean_values))
-        mean_values_with_noise = mean_values + lambda_noise * noise
-        average_values_list.append(mean_values_with_noise)
-
-    distortion = pd.concat(average_values_list, axis=1)
-    distortion = distortion.T
-
-    return distortion
-
-def advanced_distort_gen(bulk_data, sc_df, lambda_noise, sample_size=1000):
+def advanced_distort_gen(bulk_data, sc_df, lambda_noise, minmax_icon, sample_size=1000):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device} for distortion generation")
 
@@ -53,6 +48,14 @@ def advanced_distort_gen(bulk_data, sc_df, lambda_noise, sample_size=1000):
         # # Generate noise
         # noise = torch.normal(mean=bulk_tensor.mean(), std=bulk_tensor.std(), size=mean_values.shape, device=device)
         
+        ## choose to do minmax or not
+        if minmax_icon == True:
+            scaler = MinMaxScaler()
+            bulk_tensor[i] = scaler.fit_transform(bulk_tensor[i].T).T
+
+            scaler = MinMaxScaler()
+            mean_values = scaler.fit_transform(mean_values.T).T
+
         # Combine bulk data, mean values, and noise
         distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values
         distortions.append(distorted)
@@ -121,6 +124,7 @@ def pat_preprosses(patient_df):
 
 
 def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
+    set_seed(42)
 
     sc_data = ad.read_h5ad(sc_path)
     cell_names = sc_data.obs_names
@@ -146,8 +150,8 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     bulk = bulk.loc[common_index]
     print(f"After filtering: Bulk data shape: {bulk.shape}, Number of patients: {len(overall_stages)}")
 
-    distortion1 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1)
-    distortion2 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1)
+    distortion1 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1, minmax_icon=config['minmax_icon'])
+    distortion2 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1, minmax_icon=config['minmax_icon'])
     print("Distortions generated.")
 
     bulk_tensor = torch.tensor(np.array(bulk), dtype=torch.float32)

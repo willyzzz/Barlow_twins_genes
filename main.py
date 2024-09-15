@@ -4,12 +4,11 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 from barlow_config import config
-from dataset_input import Barlow_dataloader
+from dataset_input import Barlow_dataloader, set_seed
 from model_structure import Encoder, Projector, BarlowTwinsLoss, MLPClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, confusion_matrix
-
 import pandas as pd
 import numpy as np
 
@@ -66,6 +65,8 @@ def evaluate_mlp(model, X_test, y_test, device):
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
+
+    set_seed(42)
 
     print("Stage 1: Loading data...")
     # Load data
