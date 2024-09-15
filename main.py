@@ -26,7 +26,10 @@ def train_barlow_twins(encoder, projector, dataloader, criterion, optimizer, dev
         p1 = projector(z1)
         p2 = projector(z2)
 
-        loss = criterion(p1, p2)
+        p1_norm = (p1 - p1.mean(0)) / p1.std(0)
+        p2_norm = (p2 - p2.mean(0)) / p2.std(0)
+
+        loss = criterion(p1_norm, p2_norm)
         
         total_loss += loss.item()
         
