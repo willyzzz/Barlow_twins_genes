@@ -1,0 +1,119 @@
+2024-09-16 17:42:58,711 - INFO - Using device: cuda
+2024-09-16 17:42:58,711 - INFO - Stage 1: Loading data...
+2024-09-16 17:43:29,647 - INFO - Number of classes: 5
+2024-09-16 17:43:29,647 - INFO - Stage 2: Initializing models...
+2024-09-16 17:43:29,759 - INFO - Stage 3: Training Barlow Twins...
+2024-09-16 17:44:48,147 - INFO - Epoch 100 completed. Loss: 94.7061
+2024-09-16 17:46:05,675 - INFO - Epoch 200 completed. Loss: 91.9634
+2024-09-16 17:47:24,656 - INFO - Epoch 300 completed. Loss: 90.6493
+2024-09-16 17:48:42,133 - INFO - Epoch 400 completed. Loss: 90.1619
+2024-09-16 17:50:00,376 - INFO - Epoch 500 completed. Loss: 89.5128
+2024-09-16 17:51:18,558 - INFO - Epoch 600 completed. Loss: 89.0158
+2024-09-16 17:52:36,623 - INFO - Epoch 700 completed. Loss: 88.6789
+2024-09-16 17:53:54,292 - INFO - Epoch 800 completed. Loss: 88.4198
+2024-09-16 17:55:11,457 - INFO - Epoch 900 completed. Loss: 87.9925
+2024-09-16 17:56:28,850 - INFO - Epoch 1000 completed. Loss: 87.9638
+2024-09-16 17:57:45,177 - INFO - Epoch 1100 completed. Loss: 87.7310
+2024-09-16 17:59:02,800 - INFO - Epoch 1200 completed. Loss: 87.5574
+2024-09-16 18:00:18,965 - INFO - Epoch 1300 completed. Loss: 87.2471
+2024-09-16 18:01:35,326 - INFO - Epoch 1400 completed. Loss: 87.2108
+2024-09-16 18:02:52,774 - INFO - Epoch 1500 completed. Loss: 87.1718
+2024-09-16 18:04:10,013 - INFO - Epoch 1600 completed. Loss: 87.0605
+2024-09-16 18:05:27,352 - INFO - Epoch 1700 completed. Loss: 87.0103
+2024-09-16 18:06:44,627 - INFO - Epoch 1800 completed. Loss: 87.1457
+2024-09-16 18:08:02,087 - INFO - Epoch 1900 completed. Loss: 86.8220
+2024-09-16 18:09:20,503 - INFO - Epoch 2000 completed. Loss: 86.8651
+2024-09-16 18:09:25,337 - INFO - Stage 4: Preparing data for classification...
+2024-09-16 18:09:25,357 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-09-16 18:09:25,361 - INFO - Embeddings saved to embedding/embedding_20240916_174258.pt
+2024-09-16 18:09:25,362 - INFO - Stage 6: Preparing MLP classifier...
+2024-09-16 18:09:25,618 - INFO - Stage 7: Training and evaluating MLP on original bulk data...
+2024-09-16 18:09:25,618 - INFO - Training MLP on original bulk data (using SMOTE)...
+2024-09-16 18:09:45,780 - INFO - Epoch [100/100], Average Loss: 0.9054
+2024-09-16 18:09:45,788 - INFO - Evaluating MLP on original bulk data:
+2024-09-16 18:09:45,789 - INFO - 
+Sample counts for each class:
+2024-09-16 18:09:45,790 - INFO - Stage 1: 23 samples
+2024-09-16 18:09:45,790 - INFO - Stage 2: 100 samples
+2024-09-16 18:09:45,790 - INFO - Stage 3: 31 samples
+2024-09-16 18:09:45,790 - INFO - Stage 4: 3 samples
+2024-09-16 18:09:45,790 - INFO - Stage 5: 4 samples
+2024-09-16 18:09:45,790 - INFO - Total samples: 161
+2024-09-16 18:09:45,792 - INFO - 
+F1 scores for each class:
+2024-09-16 18:09:45,792 - INFO - Stage 1 F1 score: 0.0930
+2024-09-16 18:09:45,792 - INFO - Stage 2 F1 score: 0.6445
+2024-09-16 18:09:45,792 - INFO - Stage 3 F1 score: 0.2623
+2024-09-16 18:09:45,792 - INFO - Stage 4 F1 score: 0.0000
+2024-09-16 18:09:45,793 - INFO - Stage 5 F1 score: 0.0000
+2024-09-16 18:09:45,794 - INFO - 
+Macro-averaged F1 score: 0.2000
+2024-09-16 18:09:45,798 - INFO - Average precision score: 0.2346
+2024-09-16 18:09:45,799 - INFO - 
+Confusion Matrix:
+2024-09-16 18:09:45,800 - INFO - 
+[[ 2 16  5  0  0]
+ [17 68 15  0  0]
+ [ 1 22  8  0  0]
+ [ 0  2  1  0  0]
+ [ 0  3  1  0  0]]
+2024-09-16 18:09:45,806 - INFO - 
+Classification Report:
+2024-09-16 18:09:45,806 - INFO - 
+              precision    recall  f1-score   support
+
+           1       0.10      0.09      0.09        23
+           2       0.61      0.68      0.64       100
+           3       0.27      0.26      0.26        31
+           4       0.00      0.00      0.00         3
+           5       0.00      0.00      0.00         4
+
+    accuracy                           0.48       161
+   macro avg       0.20      0.21      0.20       161
+weighted avg       0.45      0.48      0.46       161
+
+2024-09-16 18:09:45,806 - INFO - Stage 8: Training and evaluating MLP on Barlow Twins embeddings...
+2024-09-16 18:10:04,034 - INFO - Epoch [100/100], Average Loss: 1.2330
+2024-09-16 18:10:04,035 - INFO - Evaluating MLP on Barlow Twins embeddings:
+2024-09-16 18:10:04,036 - INFO - 
+Sample counts for each class:
+2024-09-16 18:10:04,036 - INFO - Stage 1: 23 samples
+2024-09-16 18:10:04,037 - INFO - Stage 2: 100 samples
+2024-09-16 18:10:04,037 - INFO - Stage 3: 31 samples
+2024-09-16 18:10:04,037 - INFO - Stage 4: 3 samples
+2024-09-16 18:10:04,037 - INFO - Stage 5: 4 samples
+2024-09-16 18:10:04,037 - INFO - Total samples: 161
+2024-09-16 18:10:04,039 - INFO - 
+F1 scores for each class:
+2024-09-16 18:10:04,039 - INFO - Stage 1 F1 score: 0.2316
+2024-09-16 18:10:04,039 - INFO - Stage 2 F1 score: 0.2419
+2024-09-16 18:10:04,039 - INFO - Stage 3 F1 score: 0.3380
+2024-09-16 18:10:04,039 - INFO - Stage 4 F1 score: 0.0000
+2024-09-16 18:10:04,039 - INFO - Stage 5 F1 score: 0.0000
+2024-09-16 18:10:04,041 - INFO - 
+Macro-averaged F1 score: 0.1623
+2024-09-16 18:10:04,046 - INFO - Average precision score: 0.2438
+2024-09-16 18:10:04,047 - INFO - 
+Confusion Matrix:
+2024-09-16 18:10:04,048 - INFO - 
+[[11  6  5  1  0]
+ [46 15 22 12  5]
+ [11  2 12  3  3]
+ [ 2  0  1  0  0]
+ [ 2  1  0  1  0]]
+2024-09-16 18:10:04,053 - INFO - 
+Classification Report:
+2024-09-16 18:10:04,053 - INFO - 
+              precision    recall  f1-score   support
+
+           1       0.15      0.48      0.23        23
+           2       0.62      0.15      0.24       100
+           3       0.30      0.39      0.34        31
+           4       0.00      0.00      0.00         3
+           5       0.00      0.00      0.00         4
+
+    accuracy                           0.24       161
+   macro avg       0.22      0.20      0.16       161
+weighted avg       0.47      0.24      0.25       161
+
+2024-09-16 18:10:04,053 - INFO - All stages completed.

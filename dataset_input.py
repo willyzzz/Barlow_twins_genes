@@ -29,8 +29,15 @@ def advanced_distort_gen(bulk_data, sc_df, lambda_noise, minmax_icon, sample_siz
     print(f"Using device: {device} for distortion generation")
 
     n_repeats = bulk_data.shape[0]
-    bulk_tensor = torch.tensor(bulk_data.values, dtype=torch.float32).to(device)
-    sc_tensor = torch.tensor(sc_df.values, dtype=torch.float32).to(device)
+    if minmax_icon == True:
+        scaler = MinMaxScaler()
+        bulk_data = scaler.fit_transform(bulk_data.T).T
+
+        scaler = MinMaxScaler()
+        sc_df = scaler.fit_transform(sc_df.T).T
+
+    bulk_tensor = torch.tensor(bulk_data, dtype=torch.float32).to(device)
+    sc_tensor = torch.tensor(sc_df, dtype=torch.float32).to(device)
 
     distortions = []
     
@@ -49,12 +56,7 @@ def advanced_distort_gen(bulk_data, sc_df, lambda_noise, minmax_icon, sample_siz
         # noise = torch.normal(mean=bulk_tensor.mean(), std=bulk_tensor.std(), size=mean_values.shape, device=device)
         
         ## choose to do minmax or not
-        if minmax_icon == True:
-            scaler = MinMaxScaler()
-            bulk_tensor[i] = scaler.fit_transform(bulk_tensor[i].T).T
 
-            scaler = MinMaxScaler()
-            mean_values = scaler.fit_transform(mean_values.T).T
 
         # Combine bulk data, mean values, and noise
         distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values
@@ -139,7 +141,8 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
 
     patient_df = pd.read_csv(patient_path, sep='\t', index_col=0)
     overall_stages = pat_preprosses(patient_df)
-    print(f"Patient information loaded. Number of patients: {len(overall_stages)}")
+    num_classes = len(overall_stages['overall_stage_simplified'].unique())
+    print(f"Number of unique classes: {num_classes}")
 
     common_genes = sc_df.columns.intersection(bulk.columns)
     sc_df = sc_df[common_genes]
@@ -163,4 +166,4 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     dataloader = DataLoader(dataset, batch_size=batchsize, shuffle=True)
     print(f"Dataloader created. Number of batches: {len(dataloader)}")
 
-    return dataloader, bulk_tensor, stages_tensor
+    return dataloader, bulk_tensor, stages_tensor, num_classes

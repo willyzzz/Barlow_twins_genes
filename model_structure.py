@@ -1,33 +1,35 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
+from dataset_input import set_seed
+
+set_seed(42)
 
 # Define the Encoder part of Barlow Twins
 class Encoder(nn.Module):
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim, output_dim, dropout_rate=0.1):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(input_dim, 1024),  # 更大的隐藏层
+            nn.Linear(input_dim, 2048),
+            nn.BatchNorm1d(2048),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
+
+            nn.Linear(2048, 1024),
             nn.BatchNorm1d(1024),
-            nn.LeakyReLU(),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
 
             nn.Linear(1024, 512),
             nn.BatchNorm1d(512),
-            nn.LeakyReLU(),
-
-            nn.Linear(512, 512),  # 添加更多层
-            nn.BatchNorm1d(512),
-            nn.LeakyReLU(),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
 
             nn.Linear(512, 256),
             nn.BatchNorm1d(256),
-            nn.LeakyReLU(),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
 
-            nn.Linear(256, 128),
-            nn.BatchNorm1d(128),
-            nn.LeakyReLU(),
-
-            nn.Linear(128, output_dim)
+            nn.Linear(256, output_dim)
         )
 
     def forward(self, x):
@@ -40,6 +42,9 @@ class Projector(nn.Module):
         super().__init__()
         self.layers = nn.Sequential(
             nn.Linear(input_dim, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Linear(512, 512),
             nn.BatchNorm1d(512),
             nn.ReLU(),
             nn.Linear(512, output_dim)
@@ -59,11 +64,9 @@ class MLPClassifier(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, output_dim)
         )
-        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
-        x = self.layers(x)
-        return self.softmax(x)
+        return self.layers(x)
 
 
 # Define the Barlow Twins loss function

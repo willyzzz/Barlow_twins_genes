@@ -1,0 +1,67 @@
+2024-09-17 12:00:42,432 - INFO - Using device: cuda
+2024-09-17 12:00:42,432 - INFO - Stage 1: Loading data...
+2024-09-17 12:01:13,354 - INFO - Number of classes: 5
+2024-09-17 12:01:13,354 - INFO - Stage 2: Initializing models...
+2024-09-17 12:01:13,467 - INFO - Stage 3: Training Barlow Twins...
+2024-09-17 12:01:54,755 - INFO - Epoch 100 completed. Loss: 16.0381
+2024-09-17 12:02:35,578 - INFO - Epoch 200 completed. Loss: 15.0775
+2024-09-17 12:03:16,835 - INFO - Epoch 300 completed. Loss: 14.7631
+2024-09-17 12:03:57,661 - INFO - Epoch 400 completed. Loss: 14.4367
+2024-09-17 12:04:38,606 - INFO - Epoch 500 completed. Loss: 14.3046
+2024-09-17 12:05:19,411 - INFO - Epoch 600 completed. Loss: 14.1018
+2024-09-17 12:06:00,584 - INFO - Epoch 700 completed. Loss: 13.9728
+2024-09-17 12:06:41,547 - INFO - Epoch 800 completed. Loss: 13.8691
+2024-09-17 12:07:22,820 - INFO - Epoch 900 completed. Loss: 13.7526
+2024-09-17 12:08:03,653 - INFO - Epoch 1000 completed. Loss: 13.6738
+2024-09-17 12:08:44,381 - INFO - Epoch 1100 completed. Loss: 13.6502
+2024-09-17 12:09:25,538 - INFO - Epoch 1200 completed. Loss: 13.5820
+2024-09-17 12:10:06,541 - INFO - Epoch 1300 completed. Loss: 13.6173
+2024-09-17 12:10:47,697 - INFO - Epoch 1400 completed. Loss: 13.4983
+2024-09-17 12:11:28,767 - INFO - Epoch 1500 completed. Loss: 13.4500
+2024-09-17 12:12:09,792 - INFO - Epoch 1600 completed. Loss: 13.3992
+2024-09-17 12:12:50,846 - INFO - Epoch 1700 completed. Loss: 13.3956
+2024-09-17 12:13:31,248 - INFO - Epoch 1800 completed. Loss: 13.4303
+2024-09-17 12:14:12,721 - INFO - Epoch 1900 completed. Loss: 13.3357
+2024-09-17 12:14:53,601 - INFO - Epoch 2000 completed. Loss: 13.3361
+2024-09-17 12:15:34,610 - INFO - Epoch 2100 completed. Loss: 13.2862
+2024-09-17 12:16:15,790 - INFO - Epoch 2200 completed. Loss: 13.2174
+2024-09-17 12:16:56,717 - INFO - Epoch 2300 completed. Loss: 13.2184
+2024-09-17 12:17:37,575 - INFO - Epoch 2400 completed. Loss: 13.1802
+2024-09-17 12:18:18,754 - INFO - Epoch 2500 completed. Loss: 13.1979
+2024-09-17 12:18:59,780 - INFO - Epoch 2600 completed. Loss: 13.2108
+2024-09-17 12:19:40,408 - INFO - Epoch 2700 completed. Loss: 13.1440
+2024-09-17 12:20:21,210 - INFO - Epoch 2800 completed. Loss: 13.1325
+2024-09-17 12:21:02,108 - INFO - Epoch 2900 completed. Loss: 13.1192
+2024-09-17 12:21:43,268 - INFO - Epoch 3000 completed. Loss: 13.1424
+2024-09-17 12:22:24,457 - INFO - Epoch 3100 completed. Loss: 13.0888
+2024-09-17 12:23:05,190 - INFO - Epoch 3200 completed. Loss: 13.0612
+2024-09-17 12:23:46,134 - INFO - Epoch 3300 completed. Loss: 13.0959
+2024-09-17 12:24:27,058 - INFO - Epoch 3400 completed. Loss: 13.0902
+2024-09-17 12:25:08,030 - INFO - Epoch 3500 completed. Loss: 13.0506
+2024-09-17 12:25:49,085 - INFO - Epoch 3600 completed. Loss: 13.0105
+2024-09-17 12:26:30,048 - INFO - Epoch 3700 completed. Loss: 13.0588
+2024-09-17 12:27:10,742 - INFO - Epoch 3800 completed. Loss: 13.0457
+2024-09-17 12:27:51,664 - INFO - Epoch 3900 completed. Loss: 13.0234
+2024-09-17 12:28:32,343 - INFO - Epoch 4000 completed. Loss: 13.0193
+2024-09-17 12:29:13,518 - INFO - Epoch 4100 completed. Loss: 13.0289
+2024-09-17 12:29:54,624 - INFO - Epoch 4200 completed. Loss: 12.9929
+2024-09-17 12:30:35,516 - INFO - Epoch 4300 completed. Loss: 13.0320
+2024-09-17 12:31:16,325 - INFO - Epoch 4400 completed. Loss: 12.9810
+2024-09-17 12:31:57,706 - INFO - Epoch 4500 completed. Loss: 12.9570
+2024-09-17 12:32:38,476 - INFO - Epoch 4600 completed. Loss: 12.9702
+2024-09-17 12:33:19,456 - INFO - Epoch 4700 completed. Loss: 12.9286
+2024-09-17 12:34:00,694 - INFO - Epoch 4800 completed. Loss: 12.9617
+2024-09-17 12:34:41,749 - INFO - Epoch 4900 completed. Loss: 12.9407
+2024-09-17 12:35:22,871 - INFO - Epoch 5000 completed. Loss: 12.9469
+2024-09-17 12:49:15,162 - INFO - Stage 4: Preparing data for classification...
+2024-09-17 12:49:15,192 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-09-17 12:49:15,197 - INFO - Embeddings saved to embedding/embedding_20240917_120042.pt
+2024-09-17 12:49:15,197 - INFO - Stage 6: Preparing MLP classifier...
+2024-09-17 12:49:15,441 - INFO - Stage 7: Training and evaluating MLP on original bulk data...
+2024-09-17 12:49:15,442 - INFO - Training MLP on original bulk data:
+2024-09-17 12:49:22,648 - INFO - Epoch [100/100], Average Loss: 0.0005
+2024-09-17 12:49:22,648 - INFO - Evaluating MLP on original bulk data:
+2024-09-17 12:49:22,654 - INFO - Stage 8: Training and evaluating MLP on Barlow Twins embeddings...
+2024-09-17 12:49:29,683 - INFO - Epoch [100/100], Average Loss: 0.9473
+2024-09-17 12:49:29,683 - INFO - Evaluating MLP on Barlow Twins embeddings:
+2024-09-17 12:49:29,688 - INFO - All stages completed.
