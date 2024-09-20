@@ -6,7 +6,7 @@ set_seed(42)
 
 # Define the Encoder part of Barlow Twins
 class Encoder(nn.Module):
-    def __init__(self, input_dim, output_dim, dropout_rate=0.1):
+    def __init__(self, input_dim, output_dim, dropout_rate=0.2):
         super().__init__()
         self.layers = nn.Sequential(
             nn.Linear(input_dim, 2048),
@@ -29,7 +29,7 @@ class Encoder(nn.Module):
             nn.ReLU(),
             nn.Dropout(dropout_rate),
 
-            nn.Linear(256, output_dim)
+            nn.Linear(256, output_dim),
         )
 
     def forward(self, x):
@@ -42,9 +42,6 @@ class Projector(nn.Module):
         super().__init__()
         self.layers = nn.Sequential(
             nn.Linear(input_dim, 512),
-            nn.BatchNorm1d(512),
-            nn.ReLU(),
-            nn.Linear(512, 512),
             nn.BatchNorm1d(512),
             nn.ReLU(),
             nn.Linear(512, output_dim)

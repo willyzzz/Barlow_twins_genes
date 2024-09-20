@@ -46,7 +46,7 @@ def train_barlow_twins(encoder, projector, dataloader, criterion, optimizer, dev
 def train_mlp(model, X_train, y_train, criterion, optimizer, device, num_epochs=100, batch_size=32):
     model.to(device)
     model.train()
-
+    
     for epoch in range(num_epochs):
         epoch_loss = 0.0
         for i in range(0, len(X_train), batch_size):
@@ -54,7 +54,7 @@ def train_mlp(model, X_train, y_train, criterion, optimizer, device, num_epochs=
             batch_y = y_train[i:i + batch_size]
 
             outputs = model(batch_X)
-            loss = criterion(outputs, batch_y - 1)
+            loss = criterion(outputs, batch_y)
 
             optimizer.zero_grad()
             loss.backward()
@@ -62,16 +62,14 @@ def train_mlp(model, X_train, y_train, criterion, optimizer, device, num_epochs=
 
             epoch_loss += loss.item() * batch_X.size(0)
 
-        if (epoch + 1) % 100 == 0:
+        if (epoch + 1) % 10 == 0:  
             avg_loss = epoch_loss / len(X_train)
             logging.info(f'Epoch [{epoch + 1}/{num_epochs}], Average Loss: {avg_loss:.4f}')
-
 
 def evaluate_mlp(model, X_test, y_test, device):
     model.eval()
     with torch.no_grad():
-        y_pred = model(X_test.to(device)).argmax(dim=1).cpu().numpy() + 1
-
+        y_pred = model(X_test.to(device)).argmax(dim=1).cpu().numpy()
     print("Confusion Matrix:")
     print(confusion_matrix(y_test.cpu().numpy(), y_pred))
     print("\nClassification Report:")
