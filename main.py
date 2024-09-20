@@ -70,25 +70,41 @@ def evaluate_mlp(model, X_test, y_test, device):
     model.eval()
     with torch.no_grad():
         y_pred = model(X_test.to(device)).argmax(dim=1).cpu().numpy()
-    print("Confusion Matrix:")
-    print(confusion_matrix(y_test.cpu().numpy(), y_pred))
-    print("\nClassification Report:")
-    print(classification_report(y_test.cpu().numpy(), y_pred, zero_division=0))
+    cm = confusion_matrix(y_test.cpu().numpy(), y_pred)
+    cr = classification_report(y_test.cpu().numpy(), y_pred, zero_division=0)
+    
+    logging.info("Confusion Matrix:")
+    logging.info(f"\n{cm}")
+    logging.info("\nClassification Report:")
+    logging.info(f"\n{cr}")
 
-def setup_logging():
+def setup_logging(testing_dataset_name):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_dir = "log"
-    os.makedirs(log_dir, exist_ok=True)
+    log_dir = os.path.join("log", testing_dataset_name)
+    os.makedirs(log_dir, exist_ok=True)  # 确保目录存在
     log_file = os.path.join(log_dir, f"run_{timestamp}.log")
     
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         handlers=[logging.FileHandler(log_file),
                                   logging.StreamHandler()])
-    return timestamp
+    return timestamp, log_file
+
+def log_config_and_model(config, models):
+    logging.info("Configuration Parameters:")
+    for key, value in config.items():
+        logging.info(f"{key}: {value}")
+    
+    logging.info("Model Architectures:")
+    for model_name, model in models.items():
+        logging.info(f"{model_name}: {model}")
 
 def main():
-    timestamp = setup_logging()
+    from barlow_config import config
+    from model_structure import Encoder, Projector, MLPClassifier
+
+    testing_dataset_name = config['testing_dataset_name']
+    timestamp, log_file = setup_logging(testing_dataset_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logging.info(f"Using device: {device}")
 
@@ -106,8 +122,19 @@ def main():
     logging.info("Stage 2: Initializing models...")
     encoder = Encoder(input_dim, output_dim).to(device)
     projector = Projector(output_dim, proj_dim).to(device)
+    mlp_bulk = MLPClassifier(input_dim, config['mlp_hidden_dim'], num_classes).to(device)
+    mlp_embedded = MLPClassifier(output_dim, config['mlp_hidden_dim'], num_classes).to(device)
     criterion = BarlowTwinsLoss(config['loss_lambda_param'])
     optimizer = optim.Adam(list(encoder.parameters()) + list(projector.parameters()), lr=config['learning_rate'])
+
+    # Log config and models
+    models = {
+        "Encoder": encoder,
+        "Projector": projector,
+        "MLP Bulk": mlp_bulk,
+        "MLP Embedded": mlp_embedded
+    }
+    log_config_and_model(config, models)
 
     logging.info("Stage 3: Training Barlow Twins...")
     losses = []
@@ -137,16 +164,13 @@ def main():
         X_embedded = encoder(X)
     
     # Save embeddings
-    embedding_dir = "embedding"
-    os.makedirs(embedding_dir, exist_ok=True)
+    embedding_dir = os.path.join("embedding", testing_dataset_name)
+    os.makedirs(embedding_dir, exist_ok=True)  # 确保目录存在
     embedding_file = os.path.join(embedding_dir, f"embedding_{timestamp}.pt")
     torch.save(X_embedded, embedding_file)
     logging.info(f"Embeddings saved to {embedding_file}")
 
     logging.info("Stage 6: Preparing MLP classifier...")
-    mlp_bulk = MLPClassifier(input_dim, config['mlp_hidden_dim'], num_classes).to(device)
-    mlp_embedded = MLPClassifier(output_dim, config['mlp_hidden_dim'], num_classes).to(device)
-
     criterion_mlp = nn.CrossEntropyLoss()  
     optimizer_mlp = optim.Adam(mlp_bulk.parameters(), lr=config['learning_rate'])
     optimizer_mlp_embedded = optim.Adam(mlp_embedded.parameters(), lr=config['learning_rate'])
