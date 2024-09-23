@@ -8,6 +8,9 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import random
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.feature_selection import VarianceThreshold
+import matplotlib.pyplot as plt
+import seaborn as sns
 from barlow_config import *
 
 def set_seed(seed_value):
@@ -24,71 +27,61 @@ def set_seed(seed_value):
 ### sampling single cell data as distortion input
 
 
-def advanced_distort_gen(bulk_data, sc_df, lambda_noise, minmax_icon, standard_icon, sample_size=1000):
+def advanced_distort_gen(bulk_data, sc_df, lambda_noise, sample_size=1000):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device} for distortion generation")
 
     n_repeats = bulk_data.shape[0]
-    if minmax_icon == True:
-        scaler = MinMaxScaler()
-        bulk_data = scaler.fit_transform(bulk_data.T).T
 
-        scaler = MinMaxScaler()
-        sc_df = scaler.fit_transform(sc_df.T).T
-    
-    elif standard_icon == True:
-        scaler = StandardScaler()
-        bulk_data = scaler.fit_transform(bulk_data.T).T
-
-        scaler = StandardScaler()
-        sc_df = scaler.fit_transform(sc_df.T).T
-
-    else:
-        bulk_data = np.array(bulk_data)
-        sc_df = np.array(sc_df)
-
-    bulk_tensor = torch.tensor(bulk_data, dtype=torch.float32).to(device)
-    sc_tensor = torch.tensor(sc_df, dtype=torch.float32).to(device)
+    bulk_tensor = torch.tensor(np.array(bulk_data), dtype=torch.float32).to(device)
+    sc_tensor = torch.tensor(np.array(sc_df), dtype=torch.float32).to(device)
 
     distortions = []
     
     for i in range(n_repeats):
-        # if i % 100 == 0:
-        #     print(f"Generating distortion {i+1}/{n_repeats}")
-        
-        # Randomly sample cells
         indices = torch.randint(0, sc_tensor.shape[0], (sample_size,), device=device)
         sampled_cells = sc_tensor[indices]
-        
-        # Calculate mean
         mean_values = torch.mean(sampled_cells, dim=0)
-        
-        # # Generate noise
-        # noise = torch.normal(mean=bulk_tensor.mean(), std=bulk_tensor.std(), size=mean_values.shape, device=device)
-        
-        ## choose to do minmax or not
-
-
-        # Combine bulk data, mean values, and noise
         distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values
         distortions.append(distorted)
     
     distortions_tensor = torch.stack(distortions)
-    return distortions_tensor.cpu().numpy()
+    return distortions_tensor.cpu().numpy(), bulk_tensor.cpu().numpy()
 
-def data_augmentation(bulk_data, sc_df):
-    augmented_data = []
-    for _, bulk_sample in bulk_data.iterrows():
-        # 从单细胞数据中随机选择细胞
-        sampled_cells = sc_df.sample(n=100, replace=True)
-        
-        # 计算bulk样本和单细胞样本的加权平均
-        weight = np.random.beta(2, 2)  # 使用Beta分布生成权重
-        augmented_sample = weight * bulk_sample + (1 - weight) * sampled_cells.mean()
-        
-        augmented_data.append(augmented_sample)
-    
-    return pd.DataFrame(augmented_data, columns=bulk_data.columns)
+def plot_bulk_vs_distortion_distribution(bulk_data, distortion1, distortion2, feature_indices=None, bins=50):
+    """
+    Visualize the distribution of bulk_data and two sets of distortions by plotting the selected features' distributions.
+
+    Parameters:
+    - bulk_data: Original bulk expression data.
+    - distortion1: First set of distorted data.
+    - distortion2: Second set of distorted data.
+    - feature_indices: List of indices of features to plot. If None, plot the distribution of all features' mean.
+    - bins: Number of bins to use in the histogram.
+    """
+    if feature_indices is None:
+        # If no specific features are selected, plot the mean of all features
+        bulk_mean = bulk_data.mean(axis=0)
+        distortion1_mean = distortion1.mean(axis=0)
+        distortion2_mean = distortion2.mean(axis=0)
+
+        plt.figure(figsize=(10, 6))
+        sns.histplot(bulk_mean, bins=bins, kde=True, label="Bulk Data (mean)", color="blue", stat="density")
+        sns.histplot(distortion1_mean, bins=bins, kde=True, label="Distortion 1 (mean)", color="red", stat="density")
+        sns.histplot(distortion2_mean, bins=bins, kde=True, label="Distortion 2 (mean)", color="green", stat="density")
+    else:
+        plt.figure(figsize=(10, 6))
+        for feature_idx in feature_indices:
+            sns.histplot(bulk_data[:, feature_idx], bins=bins, kde=True, label=f"Bulk Feature {feature_idx}", color="blue", stat="density")
+            sns.histplot(distortion1[:, feature_idx], bins=bins, kde=True, label=f"Distortion 1 Feature {feature_idx}", color="red", stat="density")
+            sns.histplot(distortion2[:, feature_idx], bins=bins, kde=True, label=f"Distortion 2 Feature {feature_idx}", color="green", stat="density")
+
+    plt.title("Distribution Comparison: Bulk Data vs Distortion 1 vs Distortion 2")
+    plt.xlabel("Expression Level")
+    plt.ylabel("Density")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
 class TensorDataset(Dataset):
     def __init__(self, tensor1, tensor2, tensor3, tensor4):
@@ -173,12 +166,10 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     sc_df = sc_df[common_genes]
     bulk = bulk[common_genes]
 
-    # 确保 bulk 和 patient_df 的索引一致
     common_index = bulk.index.intersection(patient_df.index)
     bulk = bulk.loc[common_index]
     patient_df = patient_df.loc[common_index]
     
-    # 确保两者的索引顺序一致
     bulk = bulk.sort_index()
     patient_df = patient_df.sort_index()
     
@@ -187,11 +178,39 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     if not (bulk.index == patient_df.index).all():
         raise ValueError("Bulk data and patient data indices do not match!")
 
-    distortion1 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1, minmax_icon=config['minmax_icon'], standard_icon=config['standard_icon'])
-    distortion2 = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1, minmax_icon=config['minmax_icon'], standard_icon=config['standard_icon'])
+    distortion1, bulk_tensor = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1, sample_size=config['sample_size'])
+    distortion2, _ = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=0.1, sample_size=config['sample_size'])
     print("Distortions generated.")
 
-    bulk_tensor = torch.tensor(np.array(bulk), dtype=torch.float32)
+    # Apply variance threshold
+    variance_threshold = config['variance_threshold']
+    print('Cutting variance...')
+    bulk_var = bulk.var(axis=0).values
+    var_cutoff = np.sort(bulk_var)[-int(bulk.shape[1] * variance_threshold)]
+    bulk = bulk.loc[:, bulk_var > var_cutoff]
+
+    distortion1_var = np.var(distortion1, axis=0)
+    var_cutoff = np.sort(distortion1_var)[-int(distortion1.shape[1] * variance_threshold)]
+    distortion1 = distortion1[:, distortion1_var > var_cutoff]
+
+    distortion2_var = np.var(distortion2, axis=0)
+    var_cutoff = np.sort(distortion2_var)[-int(distortion2.shape[1] * variance_threshold)]
+    distortion2 = distortion2[:, distortion2_var > var_cutoff]
+
+    if config['minmax_icon']:
+        scaler = MinMaxScaler()
+        bulk = scaler.fit_transform(bulk.T).T
+        distortion1 = scaler.fit_transform(distortion1.T).T
+        distortion2 = scaler.fit_transform(distortion2.T).T
+    elif config['standard_icon']:
+        scaler = StandardScaler()
+        bulk = scaler.fit_transform(bulk.T).T
+        distortion1 = scaler.fit_transform(distortion1.T).T
+        distortion2 = scaler.fit_transform(distortion2.T).T
+
+    plot_bulk_vs_distortion_distribution(bulk, distortion1, distortion2, feature_indices=None, bins=50)
+
+    bulk_tensor = torch.tensor(bulk, dtype=torch.float32)
     distortion1_tensor = torch.tensor(distortion1, dtype=torch.float32)
     distortion2_tensor = torch.tensor(distortion2, dtype=torch.float32)
     if config['testing_dataset_name'].startswith('TCGA'):

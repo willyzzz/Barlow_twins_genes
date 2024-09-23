@@ -1,0 +1,73 @@
+2024-09-23 15:27:54,741 - INFO - Using device: cuda
+2024-09-23 15:27:54,741 - INFO - Stage 1: Loading data...
+2024-09-23 15:28:40,442 - INFO - Number of classes: 5
+2024-09-23 15:28:40,442 - INFO - Stage 2: Initializing models...
+2024-09-23 15:28:40,683 - INFO - Configuration Parameters:
+2024-09-23 15:28:40,683 - INFO - seed: 42
+2024-09-23 15:28:40,683 - INFO - batchsize: 128
+2024-09-23 15:28:40,683 - INFO - output_dim: 64
+2024-09-23 15:28:40,683 - INFO - project_dim: 128
+2024-09-23 15:28:40,683 - INFO - mlp_hidden_dim: 64
+2024-09-23 15:28:40,683 - INFO - learning_rate: 0.0001
+2024-09-23 15:28:40,683 - INFO - weight_decay: 0.001
+2024-09-23 15:28:40,683 - INFO - num_epochs: 5000
+2024-09-23 15:28:40,683 - INFO - loss_lambda_param: 0.005
+2024-09-23 15:28:40,683 - INFO - minmax_icon: True
+2024-09-23 15:28:40,683 - INFO - standard_icon: False
+2024-09-23 15:28:40,683 - INFO - model_save_path: ./model_checkpoints
+2024-09-23 15:28:40,683 - INFO - fra_save_path: ./fra_pre
+2024-09-23 15:28:40,683 - INFO - training_dataset_name: All
+2024-09-23 15:28:40,683 - INFO - testing_dataset_name: Metabric
+2024-09-23 15:28:40,683 - INFO - device: cuda
+2024-09-23 15:28:40,683 - INFO - sc_path: ../cancer_data/92_sc_healthy.h5ad
+2024-09-23 15:28:40,683 - INFO - bulk_path: ../brca_metabric/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-09-23 15:28:40,683 - INFO - patient_path: ../brca_metabric/Tumor_Stage.txt
+2024-09-23 15:28:40,683 - INFO - Model Architectures:
+2024-09-23 15:28:40,684 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=18661, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+  )
+)
+2024-09-23 15:28:40,684 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=512, out_features=128, bias=True)
+  )
+)
+2024-09-23 15:28:40,684 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=18661, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-23 15:28:40,684 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-23 15:28:40,684 - INFO - Stage 3: Training Barlow Twins...

@@ -1,0 +1,149 @@
+2024-09-23 15:50:39,994 - INFO - Using device: cuda
+2024-09-23 15:50:39,994 - INFO - Stage 1: Loading data...
+2024-09-23 15:51:12,572 - INFO - Number of classes: 5
+2024-09-23 15:51:12,572 - INFO - Stage 2: Initializing models...
+2024-09-23 15:51:12,806 - INFO - Configuration Parameters:
+2024-09-23 15:51:12,806 - INFO - seed: 42
+2024-09-23 15:51:12,806 - INFO - batchsize: 128
+2024-09-23 15:51:12,806 - INFO - sample_size: 1000
+2024-09-23 15:51:12,806 - INFO - output_dim: 64
+2024-09-23 15:51:12,806 - INFO - project_dim: 128
+2024-09-23 15:51:12,806 - INFO - mlp_hidden_dim: 64
+2024-09-23 15:51:12,806 - INFO - learning_rate: 0.0001
+2024-09-23 15:51:12,806 - INFO - weight_decay: 0.001
+2024-09-23 15:51:12,806 - INFO - num_epochs: 5
+2024-09-23 15:51:12,806 - INFO - loss_lambda_param: 0.005
+2024-09-23 15:51:12,807 - INFO - minmax_icon: True
+2024-09-23 15:51:12,807 - INFO - standard_icon: False
+2024-09-23 15:51:12,807 - INFO - model_save_path: ./model_checkpoints
+2024-09-23 15:51:12,807 - INFO - fra_save_path: ./fra_pre
+2024-09-23 15:51:12,807 - INFO - training_dataset_name: All
+2024-09-23 15:51:12,807 - INFO - testing_dataset_name: Metabric
+2024-09-23 15:51:12,807 - INFO - device: cuda
+2024-09-23 15:51:12,807 - INFO - sc_path: ../cancer_data/92_sc_healthy.h5ad
+2024-09-23 15:51:12,807 - INFO - bulk_path: ../brca_metabric/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-09-23 15:51:12,807 - INFO - patient_path: ../brca_metabric/Tumor_Stage.txt
+2024-09-23 15:51:12,807 - INFO - Model Architectures:
+2024-09-23 15:51:12,807 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=18661, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+  )
+)
+2024-09-23 15:51:12,807 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=512, out_features=128, bias=True)
+  )
+)
+2024-09-23 15:51:12,807 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=18661, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-23 15:51:12,807 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-23 15:51:12,807 - INFO - Stage 3: Training Barlow Twins...
+2024-09-23 15:51:20,241 - INFO - Stage 4: Preparing data for classification...
+2024-09-23 15:51:20,276 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-09-23 15:51:20,390 - INFO - Bulk tensor saved to result/Metabric_20240923_155039/bulk_tensor.pt
+2024-09-23 15:51:20,390 - INFO - Embeddings saved to result/Metabric_20240923_155039/embedding.pt
+2024-09-23 15:51:20,391 - INFO - Stage 6: Preparing MLP classifier...
+2024-09-23 15:51:20,755 - INFO - Stage 7: Training and evaluating MLP on original bulk data...
+2024-09-23 15:51:20,755 - INFO - Training MLP on original bulk data:
+2024-09-23 15:51:21,906 - INFO - Epoch [10/100], Average Loss: 0.4466
+2024-09-23 15:51:23,244 - INFO - Epoch [20/100], Average Loss: 0.2170
+2024-09-23 15:51:24,594 - INFO - Epoch [30/100], Average Loss: 0.1004
+2024-09-23 15:51:25,944 - INFO - Epoch [40/100], Average Loss: 0.0315
+2024-09-23 15:51:27,284 - INFO - Epoch [50/100], Average Loss: 0.0186
+2024-09-23 15:51:28,618 - INFO - Epoch [60/100], Average Loss: 0.0299
+2024-09-23 15:51:29,960 - INFO - Epoch [70/100], Average Loss: 0.0317
+2024-09-23 15:51:31,302 - INFO - Epoch [80/100], Average Loss: 0.1621
+2024-09-23 15:51:32,643 - INFO - Epoch [90/100], Average Loss: 0.0541
+2024-09-23 15:51:33,983 - INFO - Epoch [100/100], Average Loss: 0.0179
+2024-09-23 15:51:33,985 - INFO - Evaluating MLP on original bulk data:
+2024-09-23 15:51:33,994 - INFO - Confusion Matrix:
+2024-09-23 15:51:33,995 - INFO - 
+[[  0   1   1   0   0]
+ [  0  44  64   2   0]
+ [  1  21 124   4   0]
+ [  0   6  22   1   0]
+ [  0   1   2   0   0]]
+2024-09-23 15:51:33,995 - INFO - 
+Classification Report:
+2024-09-23 15:51:33,995 - INFO - 
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00         2
+           1       0.60      0.40      0.48       110
+           2       0.58      0.83      0.68       150
+           3       0.14      0.03      0.06        29
+           4       0.00      0.00      0.00         3
+
+    accuracy                           0.57       294
+   macro avg       0.27      0.25      0.24       294
+weighted avg       0.54      0.57      0.53       294
+
+2024-09-23 15:51:33,995 - INFO - Stage 8: Training and evaluating MLP on Barlow Twins embeddings...
+2024-09-23 15:51:35,285 - INFO - Epoch [10/100], Average Loss: 0.9738
+2024-09-23 15:51:36,533 - INFO - Epoch [20/100], Average Loss: 0.9422
+2024-09-23 15:51:37,722 - INFO - Epoch [30/100], Average Loss: 0.9334
+2024-09-23 15:51:38,909 - INFO - Epoch [40/100], Average Loss: 0.9275
+2024-09-23 15:51:40,134 - INFO - Epoch [50/100], Average Loss: 0.9223
+2024-09-23 15:51:41,434 - INFO - Epoch [60/100], Average Loss: 0.9174
+2024-09-23 15:51:42,739 - INFO - Epoch [70/100], Average Loss: 0.9126
+2024-09-23 15:51:44,028 - INFO - Epoch [80/100], Average Loss: 0.9075
+2024-09-23 15:51:45,331 - INFO - Epoch [90/100], Average Loss: 0.9023
+2024-09-23 15:51:46,629 - INFO - Epoch [100/100], Average Loss: 0.8971
+2024-09-23 15:51:46,632 - INFO - Evaluating MLP on Barlow Twins embeddings:
+2024-09-23 15:51:46,641 - INFO - Confusion Matrix:
+2024-09-23 15:51:46,641 - INFO - 
+[[  0   0   2   0   0]
+ [  0   5 105   0   0]
+ [  0   2 148   0   0]
+ [  0   0  29   0   0]
+ [  0   0   3   0   0]]
+2024-09-23 15:51:46,641 - INFO - 
+Classification Report:
+2024-09-23 15:51:46,642 - INFO - 
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00         2
+           1       0.71      0.05      0.09       110
+           2       0.52      0.99      0.68       150
+           3       0.00      0.00      0.00        29
+           4       0.00      0.00      0.00         3
+
+    accuracy                           0.52       294
+   macro avg       0.25      0.21      0.15       294
+weighted avg       0.53      0.52      0.38       294
+
+2024-09-23 15:51:46,642 - INFO - All stages completed.

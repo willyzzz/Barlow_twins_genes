@@ -5,7 +5,6 @@ import numpy as np
 from sklearn.metrics import f1_score, precision_recall_curve, average_precision_score, confusion_matrix, classification_report
 from sklearn.preprocessing import label_binarize
 from collections import Counter
-from imblearn.over_sampling import SMOTE
 from barlow_config import config
 from dataset_input import Barlow_dataloader, set_seed
 from model_structure import Encoder, Projector, BarlowTwinsLoss, MLPClassifier
@@ -163,11 +162,14 @@ def main():
     with torch.no_grad():
         X_embedded = encoder(X)
     
-    # Save embeddings
-    embedding_dir = os.path.join("embedding", testing_dataset_name)
-    os.makedirs(embedding_dir, exist_ok=True)  # 确保目录存在
-    embedding_file = os.path.join(embedding_dir, f"embedding_{timestamp}.pt")
+    # Save embeddings and bulk tensor
+    result_dir = os.path.join("result", f"{testing_dataset_name}_{timestamp}")
+    os.makedirs(result_dir, exist_ok=True)  
+    bulk_file = os.path.join(result_dir, "bulk_tensor.pt")
+    embedding_file = os.path.join(result_dir, "embedding.pt")
+    torch.save(bulk_tensor, bulk_file)
     torch.save(X_embedded, embedding_file)
+    logging.info(f"Bulk tensor saved to {bulk_file}")
     logging.info(f"Embeddings saved to {embedding_file}")
 
     logging.info("Stage 6: Preparing MLP classifier...")

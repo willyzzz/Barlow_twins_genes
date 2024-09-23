@@ -4,6 +4,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 config = {
     'seed': 42,
     'batchsize': 128,
+    'sample_size' : 1000,
+    'variance_threshold': 0.95,
     'output_dim': 64,
     'project_dim': 128,
     'mlp_hidden_dim': 64,
