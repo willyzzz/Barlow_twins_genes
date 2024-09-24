@@ -1,0 +1,201 @@
+2024-09-24 11:55:26,322 - INFO - Using device: cuda
+2024-09-24 11:55:26,322 - INFO - Stage 1: Loading data...
+2024-09-24 11:56:16,004 - INFO - Number of classes: 5
+2024-09-24 11:56:16,005 - INFO - Stage 2: Initializing models...
+2024-09-24 11:56:16,248 - INFO - Configuration Parameters:
+2024-09-24 11:56:16,249 - INFO - seed: 42
+2024-09-24 11:56:16,249 - INFO - batchsize: 128
+2024-09-24 11:56:16,249 - INFO - sample_size: 1000
+2024-09-24 11:56:16,249 - INFO - lambda_noise: 0.5
+2024-09-24 11:56:16,249 - INFO - variance_threshold: 0.95
+2024-09-24 11:56:16,249 - INFO - output_dim: 64
+2024-09-24 11:56:16,249 - INFO - project_dim: 128
+2024-09-24 11:56:16,249 - INFO - mlp_hidden_dim: 64
+2024-09-24 11:56:16,249 - INFO - learning_rate: 0.0001
+2024-09-24 11:56:16,249 - INFO - weight_decay: 0.001
+2024-09-24 11:56:16,249 - INFO - num_epochs: 5000
+2024-09-24 11:56:16,249 - INFO - loss_lambda_param: 0.005
+2024-09-24 11:56:16,249 - INFO - minmax_icon: True
+2024-09-24 11:56:16,249 - INFO - standard_icon: False
+2024-09-24 11:56:16,249 - INFO - model_save_path: ./model_checkpoints
+2024-09-24 11:56:16,249 - INFO - fra_save_path: ./fra_pre
+2024-09-24 11:56:16,249 - INFO - training_dataset_name: All
+2024-09-24 11:56:16,249 - INFO - testing_dataset_name: Metabric
+2024-09-24 11:56:16,249 - INFO - device: cuda
+2024-09-24 11:56:16,249 - INFO - sc_path: ../cancer_data/92_sc_healthy.h5ad
+2024-09-24 11:56:16,249 - INFO - bulk_path: ../brca_metabric/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-09-24 11:56:16,249 - INFO - patient_path: ../brca_metabric/Tumor_Stage.txt
+2024-09-24 11:56:16,249 - INFO - Model Architectures:
+2024-09-24 11:56:16,249 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=17726, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+  )
+)
+2024-09-24 11:56:16,249 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=512, out_features=128, bias=True)
+  )
+)
+2024-09-24 11:56:16,249 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=17726, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-24 11:56:16,250 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-24 11:56:16,250 - INFO - Stage 3: Training Barlow Twins...
+2024-09-24 11:58:35,453 - INFO - Epoch 100 completed. Loss: 4.4500
+2024-09-24 12:00:54,252 - INFO - Epoch 200 completed. Loss: 3.4415
+2024-09-24 12:03:11,305 - INFO - Epoch 300 completed. Loss: 2.8718
+2024-09-24 12:05:30,238 - INFO - Epoch 400 completed. Loss: 2.5021
+2024-09-24 12:07:48,417 - INFO - Epoch 500 completed. Loss: 2.2753
+2024-09-24 12:10:07,425 - INFO - Epoch 600 completed. Loss: 2.0755
+2024-09-24 12:12:26,325 - INFO - Epoch 700 completed. Loss: 1.9125
+2024-09-24 12:14:43,309 - INFO - Epoch 800 completed. Loss: 1.8549
+2024-09-24 12:17:01,008 - INFO - Epoch 900 completed. Loss: 1.7147
+2024-09-24 12:19:19,456 - INFO - Epoch 1000 completed. Loss: 1.6751
+2024-09-24 12:21:37,474 - INFO - Epoch 1100 completed. Loss: 1.6479
+2024-09-24 12:23:56,260 - INFO - Epoch 1200 completed. Loss: 1.5756
+2024-09-24 12:26:14,940 - INFO - Epoch 1300 completed. Loss: 1.5433
+2024-09-24 12:28:31,655 - INFO - Epoch 1400 completed. Loss: 1.5062
+2024-09-24 12:30:49,462 - INFO - Epoch 1500 completed. Loss: 1.4527
+2024-09-24 12:33:07,305 - INFO - Epoch 1600 completed. Loss: 1.4593
+2024-09-24 12:35:24,103 - INFO - Epoch 1700 completed. Loss: 1.4147
+2024-09-24 12:37:39,887 - INFO - Epoch 1800 completed. Loss: 1.4429
+2024-09-24 12:39:55,429 - INFO - Epoch 1900 completed. Loss: 1.3100
+2024-09-24 12:42:13,053 - INFO - Epoch 2000 completed. Loss: 1.3208
+2024-09-24 12:44:30,994 - INFO - Epoch 2100 completed. Loss: 1.2965
+2024-09-24 12:46:49,269 - INFO - Epoch 2200 completed. Loss: 1.2915
+2024-09-24 12:49:08,486 - INFO - Epoch 2300 completed. Loss: 1.2880
+2024-09-24 12:51:27,221 - INFO - Epoch 2400 completed. Loss: 1.2754
+2024-09-24 12:53:44,799 - INFO - Epoch 2500 completed. Loss: 1.2657
+2024-09-24 12:56:02,895 - INFO - Epoch 2600 completed. Loss: 1.2656
+2024-09-24 12:58:20,247 - INFO - Epoch 2700 completed. Loss: 1.2518
+2024-09-24 13:00:38,995 - INFO - Epoch 2800 completed. Loss: 1.2309
+2024-09-24 13:02:56,104 - INFO - Epoch 2900 completed. Loss: 1.1823
+2024-09-24 13:05:15,136 - INFO - Epoch 3000 completed. Loss: 1.2058
+2024-09-24 13:07:34,156 - INFO - Epoch 3100 completed. Loss: 1.1991
+2024-09-24 13:09:52,639 - INFO - Epoch 3200 completed. Loss: 1.1964
+2024-09-24 13:12:11,296 - INFO - Epoch 3300 completed. Loss: 1.1337
+2024-09-24 13:14:30,212 - INFO - Epoch 3400 completed. Loss: 1.1675
+2024-09-24 13:16:49,182 - INFO - Epoch 3500 completed. Loss: 1.1564
+2024-09-24 13:19:07,415 - INFO - Epoch 3600 completed. Loss: 1.0720
+2024-09-24 13:21:26,319 - INFO - Epoch 3700 completed. Loss: 1.1331
+2024-09-24 13:23:43,095 - INFO - Epoch 3800 completed. Loss: 1.1614
+2024-09-24 13:26:01,147 - INFO - Epoch 3900 completed. Loss: 1.1078
+2024-09-24 13:28:19,725 - INFO - Epoch 4000 completed. Loss: 1.0601
+2024-09-24 13:30:37,107 - INFO - Epoch 4100 completed. Loss: 1.1520
+2024-09-24 13:32:51,591 - INFO - Epoch 4200 completed. Loss: 1.1424
+2024-09-24 13:35:06,425 - INFO - Epoch 4300 completed. Loss: 1.1033
+2024-09-24 13:37:20,602 - INFO - Epoch 4400 completed. Loss: 1.1045
+2024-09-24 13:39:38,978 - INFO - Epoch 4500 completed. Loss: 1.0914
+2024-09-24 13:41:57,939 - INFO - Epoch 4600 completed. Loss: 1.0553
+2024-09-24 13:44:15,716 - INFO - Epoch 4700 completed. Loss: 1.0819
+2024-09-24 13:46:34,290 - INFO - Epoch 4800 completed. Loss: 1.1135
+2024-09-24 13:48:49,851 - INFO - Epoch 4900 completed. Loss: 1.0617
+2024-09-24 13:51:08,239 - INFO - Epoch 5000 completed. Loss: 1.0364
+2024-09-24 13:57:33,755 - INFO - Stage 4: Preparing data for classification...
+2024-09-24 13:57:33,805 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-09-24 13:57:33,931 - INFO - Bulk tensor saved to result/Metabric_20240924_115526/bulk_tensor.pt
+2024-09-24 13:57:33,931 - INFO - Embeddings saved to result/Metabric_20240924_115526/embedding.pt
+2024-09-24 13:57:33,931 - INFO - Stage 6: Preparing MLP classifier...
+2024-09-24 13:57:34,284 - INFO - Stage 7: Training and evaluating MLP on original bulk data...
+2024-09-24 13:57:34,284 - INFO - Training MLP on original bulk data:
+2024-09-24 13:57:35,422 - INFO - Epoch [10/100], Average Loss: 0.4320
+2024-09-24 13:57:36,663 - INFO - Epoch [20/100], Average Loss: 0.2903
+2024-09-24 13:57:37,989 - INFO - Epoch [30/100], Average Loss: 0.0505
+2024-09-24 13:57:39,329 - INFO - Epoch [40/100], Average Loss: 0.0749
+2024-09-24 13:57:40,677 - INFO - Epoch [50/100], Average Loss: 0.0213
+2024-09-24 13:57:41,888 - INFO - Epoch [60/100], Average Loss: 0.0226
+2024-09-24 13:57:43,214 - INFO - Epoch [70/100], Average Loss: 0.0856
+2024-09-24 13:57:44,545 - INFO - Epoch [80/100], Average Loss: 0.0313
+2024-09-24 13:57:45,872 - INFO - Epoch [90/100], Average Loss: 0.0130
+2024-09-24 13:57:47,177 - INFO - Epoch [100/100], Average Loss: 0.0049
+2024-09-24 13:57:47,178 - INFO - Evaluating MLP on original bulk data:
+2024-09-24 13:57:47,187 - INFO - Confusion Matrix:
+2024-09-24 13:57:47,188 - INFO - 
+[[  0   1   1   0   0]
+ [  0  44  64   2   0]
+ [  1  30 118   1   0]
+ [  0   3  23   3   0]
+ [  0   1   2   0   0]]
+2024-09-24 13:57:47,188 - INFO - 
+Classification Report:
+2024-09-24 13:57:47,188 - INFO - 
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00         2
+           1       0.56      0.40      0.47       110
+           2       0.57      0.79      0.66       150
+           3       0.50      0.10      0.17        29
+           4       0.00      0.00      0.00         3
+
+    accuracy                           0.56       294
+   macro avg       0.32      0.26      0.26       294
+weighted avg       0.55      0.56      0.53       294
+
+2024-09-24 13:57:47,188 - INFO - Stage 8: Training and evaluating MLP on Barlow Twins embeddings...
+2024-09-24 13:57:48,282 - INFO - Epoch [10/100], Average Loss: 0.9806
+2024-09-24 13:57:49,466 - INFO - Epoch [20/100], Average Loss: 0.9300
+2024-09-24 13:57:50,766 - INFO - Epoch [30/100], Average Loss: 0.9185
+2024-09-24 13:57:52,018 - INFO - Epoch [40/100], Average Loss: 0.9122
+2024-09-24 13:57:53,252 - INFO - Epoch [50/100], Average Loss: 0.9071
+2024-09-24 13:57:54,444 - INFO - Epoch [60/100], Average Loss: 0.9024
+2024-09-24 13:57:55,728 - INFO - Epoch [70/100], Average Loss: 0.8980
+2024-09-24 13:57:57,026 - INFO - Epoch [80/100], Average Loss: 0.8938
+2024-09-24 13:57:58,208 - INFO - Epoch [90/100], Average Loss: 0.8898
+2024-09-24 13:57:59,395 - INFO - Epoch [100/100], Average Loss: 0.8860
+2024-09-24 13:57:59,397 - INFO - Evaluating MLP on Barlow Twins embeddings:
+2024-09-24 13:57:59,406 - INFO - Confusion Matrix:
+2024-09-24 13:57:59,406 - INFO - 
+[[  0   0   2   0   0]
+ [  0   6 104   0   0]
+ [  0  16 134   0   0]
+ [  0   5  24   0   0]
+ [  0   2   1   0   0]]
+2024-09-24 13:57:59,406 - INFO - 
+Classification Report:
+2024-09-24 13:57:59,406 - INFO - 
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00         2
+           1       0.21      0.05      0.09       110
+           2       0.51      0.89      0.65       150
+           3       0.00      0.00      0.00        29
+           4       0.00      0.00      0.00         3
+
+    accuracy                           0.48       294
+   macro avg       0.14      0.19      0.15       294
+weighted avg       0.34      0.48      0.36       294
+
+2024-09-24 13:57:59,407 - INFO - All stages completed.
