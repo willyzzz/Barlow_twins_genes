@@ -261,4 +261,6 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     dataloader = DataLoader(dataset, batch_size=batchsize, shuffle=True)
     print(f"Dataloader created. Number of batches: {len(dataloader)}")
 
-    return dataloader, bulk_tensor, stages_tensor, num_classes
+    bulk_index = bulk.index
+
+    return dataloader, bulk_tensor, stages_tensor, num_classes, bulk_index

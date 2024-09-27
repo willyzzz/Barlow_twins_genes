@@ -42,7 +42,7 @@ def train_barlow_twins(encoder, projector, dataloader, criterion, optimizer, dev
     
     return total_loss / len(dataloader)
 
-def train_mlp(model, X_train, y_train, criterion, optimizer, device, num_epochs=100, batch_size=32):
+def train_mlp(model, X_train, y_train, criterion, optimizer, device, num_epochs=config['mlp_epochs'], batch_size=32):
     model.to(device)
     model.train()
     
@@ -110,7 +110,7 @@ def main():
     set_seed(42)
 
     logging.info("Stage 1: Loading data...")
-    dataloader, bulk_tensor, stages_tensor, num_classes = Barlow_dataloader(config['sc_path'], config['bulk_path'],
+    dataloader, bulk_tensor, stages_tensor, num_classes, bulk_index = Barlow_dataloader(config['sc_path'], config['bulk_path'],
                                                 config['patient_path'], batchsize=config['batchsize'])
     input_dim = bulk_tensor.shape[1]
     output_dim = config['output_dim']
@@ -144,14 +144,14 @@ def main():
             logging.info(f"Epoch {epoch + 1} completed. Loss: {epoch_loss:.4f}")
 
     # Plot loss curve
-    plt.figure(figsize=(10, 5))
-    plt.plot(range(1, config['num_epochs'] + 1), losses, label='Training Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.title('Barlow Twins Loss Curve')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    # plt.figure(figsize=(10, 5))
+    # plt.plot(range(1, config['num_epochs'] + 1), losses, label='Training Loss')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Loss')
+    # plt.title('Barlow Twins Loss Curve')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
 
     logging.info("Stage 4: Preparing data for classification...")
     X = bulk_tensor.to(device)
@@ -164,11 +164,13 @@ def main():
     
     # Save embeddings and bulk tensor
     result_dir = os.path.join("result", f"{testing_dataset_name}_{timestamp}")
-    os.makedirs(result_dir, exist_ok=True)  
+    os.makedirs(result_dir, exist_ok=True)
+    bulk_tensor_df = pd.DataFrame(bulk_tensor.cpu().numpy(), index = bulk_index)
+    embedding_df = pd.DataFrame(X_embedded.cpu().numpy(), index= bulk_index)
     bulk_file = os.path.join(result_dir, "bulk_tensor.pt")
     embedding_file = os.path.join(result_dir, "embedding.pt")
-    torch.save(bulk_tensor, bulk_file)
-    torch.save(X_embedded, embedding_file)
+    torch.save(bulk_tensor_df, bulk_file)
+    torch.save(embedding_df, embedding_file)
     logging.info(f"Bulk tensor saved to {bulk_file}")
     logging.info(f"Embeddings saved to {embedding_file}")
 
