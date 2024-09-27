@@ -27,42 +27,26 @@ def set_seed(seed_value):
 ### sampling single cell data as distortion input
 
 
-def sample_single_cells(sc_df, sample_size=1000):
+def advanced_distort_gen(bulk_data, sc_df, lambda_noise, sample_size=1000):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    indices = torch.randint(0, sc_df.shape[0], (sample_size,), device=device)
-    sampled_cells = sc_df.iloc[indices.cpu().numpy()]
-    return sampled_cells
+    print(f"Using device: {device} for distortion generation")
 
-def plot_bulk_vs_sampled_distribution(bulk_data, sampled_cells, feature_indices=None, bins=50):
-    """
-    Visualize the distribution of bulk_data and sampled single cells by plotting the selected features' distributions.
+    n_repeats = bulk_data.shape[0]
 
-    Parameters:
-    - bulk_data: Original bulk expression data.
-    - sampled_cells: Sampled single cell data.
-    - feature_indices: List of indices of features to plot. If None, plot the distribution of all features' mean.
-    - bins: Number of bins to use in the histogram.
-    """
-    if feature_indices is None:
-        # If no specific features are selected, plot the mean of all features
-        bulk_mean = bulk_data.mean(axis=0)
-        sampled_mean = sampled_cells.mean(axis=0)
+    bulk_tensor = torch.tensor(np.array(bulk_data), dtype=torch.float32).to(device)
+    sc_tensor = torch.tensor(np.array(sc_df), dtype=torch.float32).to(device)
 
-        plt.figure(figsize=(10, 6))
-        sns.histplot(bulk_mean, bins=bins, kde=True, label="Bulk Data (mean)", color="blue", stat="density")
-        sns.histplot(sampled_mean, bins=bins, kde=True, label="Sampled Cells (mean)", stat="density")
-    else:
-        plt.figure(figsize=(10, 6))
-        for feature_idx in feature_indices:
-            sns.histplot(bulk_data[:, feature_idx], bins=bins, kde=True, label=f"Bulk Feature {feature_idx}", color="blue", stat="density")
-            sns.histplot(sampled_cells[:, feature_idx], bins=bins, kde=True, label=f"Sampled Cells Feature {feature_idx}", stat="density")
-
-    plt.title("Distribution Comparison: Bulk Data vs Sampled Single Cells")
-    plt.xlabel("Expression Level")
-    plt.ylabel("Density")
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    distortions = []
+    
+    for i in range(n_repeats):
+        indices = torch.randint(0, sc_tensor.shape[0], (sample_size,), device=device)
+        sampled_cells = sc_tensor[indices]
+        mean_values = torch.mean(sampled_cells, dim=0)
+        distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values
+        distortions.append(distorted)
+    
+    distortions_tensor = torch.stack(distortions)
+    return distortions_tensor.cpu().numpy(), bulk_tensor.cpu().numpy()
 
 def plot_bulk_vs_distortion_distribution(bulk_data, distortion1, distortion2, feature_indices=None, bins=50):
     """
@@ -98,41 +82,6 @@ def plot_bulk_vs_distortion_distribution(bulk_data, distortion1, distortion2, fe
     plt.legend()
     plt.grid(True)
     plt.show()
-
-
-def apply_scaling(bulk_data, sampled_cells, scaling_method):
-    if scaling_method == 'minmax':
-        scaler = MinMaxScaler()
-    elif scaling_method == 'standard':
-        scaler = StandardScaler()
-    else:
-        raise ValueError("Unsupported scaling method")
-
-    bulk_data_scaled = scaler.fit_transform(bulk_data)
-    sampled_cells_scaled = scaler.fit_transform(sampled_cells)
-    return bulk_data_scaled, sampled_cells_scaled
-
-def filter_genes_by_variance(bulk_data, sampled_cells, variance_threshold):
-    bulk_var = np.var(bulk_data, axis=0)
-    sampled_var = np.var(sampled_cells, axis=0)
-    combined_var = bulk_var + sampled_var
-    var_cutoff = np.sort(combined_var)[-int(combined_var.shape[0] * variance_threshold)]
-    selected_genes = combined_var > var_cutoff
-    return bulk_data[:, selected_genes], sampled_cells[:, selected_genes]
-
-def generate_distortions(bulk_data, sampled_cells, lambda_noise):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    bulk_tensor = torch.tensor(bulk_data, dtype=torch.float32).to(device)
-    sampled_tensor = torch.tensor(sampled_cells, dtype=torch.float32).to(device)
-
-    distortions = []
-    for i in range(bulk_tensor.shape[0]):
-        mean_values = torch.mean(sampled_tensor, dim=0)
-        distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values
-        distortions.append(distorted)
-    
-    distortions_tensor = torch.stack(distortions)
-    return distortions_tensor.cpu().numpy()
 
 class TensorDataset(Dataset):
     def __init__(self, tensor1, tensor2, tensor3, tensor4):
@@ -229,27 +178,39 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     if not (bulk.index == patient_df.index).all():
         raise ValueError("Bulk data and patient data indices do not match!")
 
-    # Step 1: Sample single cells
-    sampled_cells = sample_single_cells(sc_df, sample_size=config['sample_size'])
-
-    # Step 2: Plot bulk vs sampled single cells distribution
-    plot_bulk_vs_sampled_distribution(bulk, sampled_cells, feature_indices=None, bins=50)
-
-    # Step 3: Apply scaling
-    bulk_scaled, sampled_scaled = apply_scaling(bulk.values, sampled_cells.values, scaling_method=config['scaling_method'])
-
-    # Step 4: Filter genes by variance
-    bulk_filtered, sampled_filtered = filter_genes_by_variance(bulk_scaled, sampled_scaled, variance_threshold=config['variance_threshold'])
-
-    plot_bulk_vs_sampled_distribution(bulk_filtered, sampled_filtered, feature_indices=None, bins=50)
-    # Step 5: Generate distortions
-    distortion1 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=0.1)
-    distortion2 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=0.1)
+    distortion1, bulk_tensor = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=config['lambda_noise'], sample_size=config['sample_size'])
+    distortion2, _ = advanced_distort_gen(bulk, sc_df=sc_df, lambda_noise=config['lambda_noise'], sample_size=config['sample_size'])
     print("Distortions generated.")
 
-    plot_bulk_vs_distortion_distribution(bulk_filtered, distortion1, distortion2, feature_indices=None, bins=50)
+    # Apply variance threshold
+    variance_threshold = config['variance_threshold']
+    print('Cutting variance...')
+    bulk_var = bulk.var(axis=0).values
+    var_cutoff = np.sort(bulk_var)[-int(bulk.shape[1] * variance_threshold)]
+    bulk = bulk.loc[:, bulk_var > var_cutoff]
 
-    bulk_tensor = torch.tensor(bulk_filtered, dtype=torch.float32)
+    distortion1_var = np.var(distortion1, axis=0)
+    var_cutoff = np.sort(distortion1_var)[-int(distortion1.shape[1] * variance_threshold)]
+    distortion1 = distortion1[:, distortion1_var > var_cutoff]
+
+    distortion2_var = np.var(distortion2, axis=0)
+    var_cutoff = np.sort(distortion2_var)[-int(distortion2.shape[1] * variance_threshold)]
+    distortion2 = distortion2[:, distortion2_var > var_cutoff]
+
+    if config['minmax_icon']:
+        scaler = MinMaxScaler()
+        bulk = scaler.fit_transform(bulk.T).T
+        distortion1 = scaler.fit_transform(distortion1.T).T
+        distortion2 = scaler.fit_transform(distortion2.T).T
+    elif config['standard_icon']:
+        scaler = StandardScaler()
+        bulk = scaler.fit_transform(bulk.T).T
+        distortion1 = scaler.fit_transform(distortion1.T).T
+        distortion2 = scaler.fit_transform(distortion2.T).T
+
+    plot_bulk_vs_distortion_distribution(bulk, distortion1, distortion2, feature_indices=None, bins=50)
+
+    bulk_tensor = torch.tensor(bulk, dtype=torch.float32)
     distortion1_tensor = torch.tensor(distortion1, dtype=torch.float32)
     distortion2_tensor = torch.tensor(distortion2, dtype=torch.float32)
     if config['testing_dataset_name'].startswith('TCGA'):
@@ -261,6 +222,4 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     dataloader = DataLoader(dataset, batch_size=batchsize, shuffle=True)
     print(f"Dataloader created. Number of batches: {len(dataloader)}")
 
-    bulk_index = bulk.index
-
-    return dataloader, bulk_tensor, stages_tensor, num_classes, bulk_index
+    return dataloader, bulk_tensor, stages_tensor, num_classes

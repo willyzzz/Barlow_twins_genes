@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from dataset_input import set_seed
+from dataset_input_back import set_seed
 
 set_seed(42)
 
