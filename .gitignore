@@ -1,3 +1,6 @@
 id_rsa*
 rsa_key*
 a*
+cancer_brca_metabric_bulk_data/
+cancer_single_cell_data/
+result/
