@@ -1,0 +1,135 @@
+2024-10-02 16:28:36,458 - INFO - Using device: cuda
+2024-10-02 16:28:36,458 - INFO - Stage 1: Loading data...
+2024-10-02 16:29:50,247 - INFO - Number of classes: 5
+2024-10-02 16:29:50,248 - INFO - Stage 2: Initializing models...
+2024-10-02 16:29:50,472 - INFO - Configuration Parameters:
+2024-10-02 16:29:50,472 - INFO - seed: 42
+2024-10-02 16:29:50,472 - INFO - batchsize: 128
+2024-10-02 16:29:50,472 - INFO - sample_size: 2000
+2024-10-02 16:29:50,472 - INFO - lambda_noise: 0.1
+2024-10-02 16:29:50,472 - INFO - variance_threshold: 0.95
+2024-10-02 16:29:50,472 - INFO - output_dim: 128
+2024-10-02 16:29:50,472 - INFO - project_dim: 256
+2024-10-02 16:29:50,472 - INFO - mlp_hidden_dim: 64
+2024-10-02 16:29:50,472 - INFO - learning_rate: 0.0001
+2024-10-02 16:29:50,472 - INFO - weight_decay: 0.001
+2024-10-02 16:29:50,472 - INFO - num_epochs: 5000
+2024-10-02 16:29:50,472 - INFO - mlp_epochs: 5000
+2024-10-02 16:29:50,472 - INFO - loss_lambda_param: 0.005
+2024-10-02 16:29:50,472 - INFO - scaling_method: minmax
+2024-10-02 16:29:50,472 - INFO - eval_metric: survival
+2024-10-02 16:29:50,472 - INFO - model_save_path: ./model_checkpoints
+2024-10-02 16:29:50,472 - INFO - fra_save_path: ./fra_pre
+2024-10-02 16:29:50,472 - INFO - training_dataset_name: All
+2024-10-02 16:29:50,472 - INFO - testing_dataset_name: Metabric
+2024-10-02 16:29:50,472 - INFO - device: cuda
+2024-10-02 16:29:50,472 - INFO - sc_path: ./cancer_single_cell_data/processed_data.h5ad
+2024-10-02 16:29:50,472 - INFO - bulk_path: ./cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-10-02 16:29:50,472 - INFO - stage_path: ./cancer_brca_metabric_bulk_data/Tumor_Stage.txt
+2024-10-02 16:29:50,472 - INFO - survival_path: ./Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt
+2024-10-02 16:29:50,472 - INFO - Model Architectures:
+2024-10-02 16:29:50,473 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=16195, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=128, bias=True)
+  )
+)
+2024-10-02 16:29:50,473 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=128, out_features=1024, bias=True)
+    (1): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=1024, out_features=256, bias=True)
+  )
+)
+2024-10-02 16:29:50,473 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=16195, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-02 16:29:50,473 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=128, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-02 16:29:50,473 - INFO - Stage 3: Training Barlow Twins...
+2024-10-02 16:31:20,005 - INFO - Epoch 100 completed. Loss: 10.8304
+2024-10-02 16:32:49,510 - INFO - Epoch 200 completed. Loss: 8.2627
+2024-10-02 16:34:19,081 - INFO - Epoch 300 completed. Loss: 7.1410
+2024-10-02 16:35:48,847 - INFO - Epoch 400 completed. Loss: 6.2304
+2024-10-02 16:37:18,246 - INFO - Epoch 500 completed. Loss: 5.4673
+2024-10-02 16:38:47,744 - INFO - Epoch 600 completed. Loss: 5.1021
+2024-10-02 16:40:16,805 - INFO - Epoch 700 completed. Loss: 4.6320
+2024-10-02 16:41:46,031 - INFO - Epoch 800 completed. Loss: 4.4030
+2024-10-02 16:43:14,814 - INFO - Epoch 900 completed. Loss: 4.2379
+2024-10-02 16:44:43,587 - INFO - Epoch 1000 completed. Loss: 4.2576
+2024-10-02 16:46:13,227 - INFO - Epoch 1100 completed. Loss: 4.0712
+2024-10-02 16:47:42,347 - INFO - Epoch 1200 completed. Loss: 3.8226
+2024-10-02 16:49:11,667 - INFO - Epoch 1300 completed. Loss: 3.8101
+2024-10-02 16:50:40,589 - INFO - Epoch 1400 completed. Loss: 3.9489
+2024-10-02 16:52:09,976 - INFO - Epoch 1500 completed. Loss: 3.7756
+2024-10-02 16:53:39,696 - INFO - Epoch 1600 completed. Loss: 3.7868
+2024-10-02 16:55:08,589 - INFO - Epoch 1700 completed. Loss: 3.8654
+2024-10-02 16:56:37,588 - INFO - Epoch 1800 completed. Loss: 3.6354
+2024-10-02 16:58:06,903 - INFO - Epoch 1900 completed. Loss: 3.7449
+2024-10-02 16:59:36,066 - INFO - Epoch 2000 completed. Loss: 3.7722
+2024-10-02 17:01:05,573 - INFO - Epoch 2100 completed. Loss: 3.6534
+2024-10-02 17:02:35,093 - INFO - Epoch 2200 completed. Loss: 3.6261
+2024-10-02 17:04:04,721 - INFO - Epoch 2300 completed. Loss: 3.5976
+2024-10-02 17:05:34,417 - INFO - Epoch 2400 completed. Loss: 3.6634
+2024-10-02 17:07:04,064 - INFO - Epoch 2500 completed. Loss: 3.6984
+2024-10-02 17:08:33,492 - INFO - Epoch 2600 completed. Loss: 3.5560
+2024-10-02 17:10:02,399 - INFO - Epoch 2700 completed. Loss: 3.5148
+2024-10-02 17:11:32,003 - INFO - Epoch 2800 completed. Loss: 3.5353
+2024-10-02 17:13:01,299 - INFO - Epoch 2900 completed. Loss: 3.6467
+2024-10-02 17:14:30,891 - INFO - Epoch 3000 completed. Loss: 3.6123
+2024-10-02 17:16:00,293 - INFO - Epoch 3100 completed. Loss: 3.6313
+2024-10-02 17:17:29,939 - INFO - Epoch 3200 completed. Loss: 3.5367
+2024-10-02 17:18:59,113 - INFO - Epoch 3300 completed. Loss: 3.5233
+2024-10-02 17:20:28,725 - INFO - Epoch 3400 completed. Loss: 3.4567
+2024-10-02 17:21:57,899 - INFO - Epoch 3500 completed. Loss: 3.5298
+2024-10-02 17:23:27,127 - INFO - Epoch 3600 completed. Loss: 3.4232
+2024-10-02 17:24:56,531 - INFO - Epoch 3700 completed. Loss: 3.5156
+2024-10-02 17:26:25,836 - INFO - Epoch 3800 completed. Loss: 3.5330
+2024-10-02 17:27:54,939 - INFO - Epoch 3900 completed. Loss: 3.5286
+2024-10-02 17:29:24,341 - INFO - Epoch 4000 completed. Loss: 3.4538
+2024-10-02 17:30:54,196 - INFO - Epoch 4100 completed. Loss: 3.5796
+2024-10-02 17:32:23,621 - INFO - Epoch 4200 completed. Loss: 3.4684
+2024-10-02 17:33:53,470 - INFO - Epoch 4300 completed. Loss: 3.4105
+2024-10-02 17:35:23,005 - INFO - Epoch 4400 completed. Loss: 3.4524
+2024-10-02 17:36:52,052 - INFO - Epoch 4500 completed. Loss: 3.3918
+2024-10-02 17:38:21,528 - INFO - Epoch 4600 completed. Loss: 3.4604
+2024-10-02 17:39:51,131 - INFO - Epoch 4700 completed. Loss: 3.5001
+2024-10-02 17:41:20,739 - INFO - Epoch 4800 completed. Loss: 3.4328
+2024-10-02 17:42:50,022 - INFO - Epoch 4900 completed. Loss: 3.3518
+2024-10-02 17:44:19,280 - INFO - Epoch 5000 completed. Loss: 3.3128
+2024-10-02 17:44:22,439 - INFO - Stage 4: Preparing data for classification...
+2024-10-02 17:44:22,480 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-10-02 17:44:23,537 - INFO - Bulk tensor saved to result/Metabric_20241002_162836/bulk_tensor.pt
+2024-10-02 17:44:23,537 - INFO - Embeddings saved to result/Metabric_20241002_162836/embedding.pt
+2024-10-02 17:44:23,537 - INFO - Stage 6: Evaluate survival
+2024-10-02 17:44:23,537 - INFO - Preparing Cox model
+2024-10-02 17:44:23,537 - INFO - Training Cox model on bulk data...

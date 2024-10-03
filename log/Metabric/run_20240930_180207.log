@@ -1,0 +1,80 @@
+2024-09-30 18:02:07,077 - INFO - Using device: cuda
+2024-09-30 18:02:07,077 - INFO - Stage 1: Loading data...
+2024-09-30 18:02:18,306 - INFO - Number of classes: 5
+2024-09-30 18:02:18,306 - INFO - Stage 2: Initializing models...
+2024-09-30 18:02:18,343 - INFO - Configuration Parameters:
+2024-09-30 18:02:18,343 - INFO - seed: 42
+2024-09-30 18:02:18,343 - INFO - batchsize: 128
+2024-09-30 18:02:18,343 - INFO - sample_size: 1000
+2024-09-30 18:02:18,343 - INFO - lambda_noise: 0.5
+2024-09-30 18:02:18,343 - INFO - variance_threshold: 0.6
+2024-09-30 18:02:18,343 - INFO - output_dim: 64
+2024-09-30 18:02:18,344 - INFO - project_dim: 128
+2024-09-30 18:02:18,344 - INFO - mlp_hidden_dim: 64
+2024-09-30 18:02:18,344 - INFO - learning_rate: 0.0001
+2024-09-30 18:02:18,344 - INFO - weight_decay: 0.001
+2024-09-30 18:02:18,344 - INFO - num_epochs: 5000
+2024-09-30 18:02:18,344 - INFO - mlp_epochs: 5000
+2024-09-30 18:02:18,344 - INFO - loss_lambda_param: 0.005
+2024-09-30 18:02:18,344 - INFO - scaling_method: minmax
+2024-09-30 18:02:18,344 - INFO - eval_metric: survival
+2024-09-30 18:02:18,344 - INFO - model_save_path: ./model_checkpoints
+2024-09-30 18:02:18,344 - INFO - fra_save_path: ./fra_pre
+2024-09-30 18:02:18,344 - INFO - training_dataset_name: All
+2024-09-30 18:02:18,344 - INFO - testing_dataset_name: Metabric
+2024-09-30 18:02:18,344 - INFO - device: cuda
+2024-09-30 18:02:18,344 - INFO - sc_path: ./cancer_single_cell_data/processed_data.h5ad
+2024-09-30 18:02:18,344 - INFO - bulk_path: ./cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-09-30 18:02:18,344 - INFO - stage_path: ./cancer_brca_metabric_bulk_data/Tumor_Stage.txt
+2024-09-30 18:02:18,344 - INFO - survival_path: ./Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt
+2024-09-30 18:02:18,344 - INFO - Model Architectures:
+2024-09-30 18:02:18,344 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=2155, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+  )
+)
+2024-09-30 18:02:18,344 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=512, out_features=128, bias=True)
+  )
+)
+2024-09-30 18:02:18,344 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=2155, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-30 18:02:18,344 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-30 18:02:18,344 - INFO - Stage 3: Training Barlow Twins...
+2024-09-30 18:02:51,060 - INFO - Epoch 100 completed. Loss: 3.2792
+2024-09-30 18:03:28,715 - INFO - Epoch 200 completed. Loss: 2.4918

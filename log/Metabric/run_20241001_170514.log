@@ -1,0 +1,327 @@
+2024-10-01 17:05:14,215 - INFO - Using device: cuda
+2024-10-01 17:05:14,215 - INFO - Stage 1: Loading data...
+2024-10-01 17:05:27,379 - INFO - Number of classes: 5
+2024-10-01 17:05:27,379 - INFO - Stage 2: Initializing models...
+2024-10-01 17:05:27,424 - INFO - Configuration Parameters:
+2024-10-01 17:05:27,424 - INFO - seed: 42
+2024-10-01 17:05:27,424 - INFO - batchsize: 128
+2024-10-01 17:05:27,424 - INFO - sample_size: 2000
+2024-10-01 17:05:27,424 - INFO - lambda_noise: 0.2
+2024-10-01 17:05:27,424 - INFO - variance_threshold: 0.95
+2024-10-01 17:05:27,424 - INFO - output_dim: 64
+2024-10-01 17:05:27,424 - INFO - project_dim: 128
+2024-10-01 17:05:27,424 - INFO - mlp_hidden_dim: 64
+2024-10-01 17:05:27,424 - INFO - learning_rate: 0.0001
+2024-10-01 17:05:27,424 - INFO - weight_decay: 0.001
+2024-10-01 17:05:27,424 - INFO - num_epochs: 20000
+2024-10-01 17:05:27,424 - INFO - mlp_epochs: 5000
+2024-10-01 17:05:27,424 - INFO - loss_lambda_param: 0.005
+2024-10-01 17:05:27,424 - INFO - scaling_method: minmax
+2024-10-01 17:05:27,424 - INFO - eval_metric: survival
+2024-10-01 17:05:27,425 - INFO - model_save_path: ./model_checkpoints
+2024-10-01 17:05:27,425 - INFO - fra_save_path: ./fra_pre
+2024-10-01 17:05:27,425 - INFO - training_dataset_name: All
+2024-10-01 17:05:27,425 - INFO - testing_dataset_name: Metabric
+2024-10-01 17:05:27,425 - INFO - device: cuda
+2024-10-01 17:05:27,425 - INFO - sc_path: ./cancer_single_cell_data/processed_data.h5ad
+2024-10-01 17:05:27,425 - INFO - bulk_path: ./cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-10-01 17:05:27,425 - INFO - stage_path: ./cancer_brca_metabric_bulk_data/Tumor_Stage.txt
+2024-10-01 17:05:27,425 - INFO - survival_path: ./Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt
+2024-10-01 17:05:27,425 - INFO - Model Architectures:
+2024-10-01 17:05:27,425 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=1371, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+    (17): Softplus(beta=1, threshold=20)
+  )
+)
+2024-10-01 17:05:27,425 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=1024, bias=True)
+    (1): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=1024, out_features=128, bias=True)
+  )
+)
+2024-10-01 17:05:27,425 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=1371, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-01 17:05:27,425 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-01 17:05:27,425 - INFO - Stage 3: Training Barlow Twins...
+2024-10-01 17:06:01,700 - INFO - Epoch 100 completed. Loss: 3.1356
+2024-10-01 17:06:38,845 - INFO - Epoch 200 completed. Loss: 2.2546
+2024-10-01 17:07:14,260 - INFO - Epoch 300 completed. Loss: 1.7541
+2024-10-01 17:07:40,962 - INFO - Epoch 400 completed. Loss: 1.4601
+2024-10-01 17:08:01,213 - INFO - Epoch 500 completed. Loss: 1.2557
+2024-10-01 17:08:25,174 - INFO - Epoch 600 completed. Loss: 1.1161
+2024-10-01 17:09:01,854 - INFO - Epoch 700 completed. Loss: 0.9729
+2024-10-01 17:09:32,921 - INFO - Epoch 800 completed. Loss: 0.9065
+2024-10-01 17:10:05,230 - INFO - Epoch 900 completed. Loss: 0.8028
+2024-10-01 17:10:43,623 - INFO - Epoch 1000 completed. Loss: 0.7900
+2024-10-01 17:11:19,811 - INFO - Epoch 1100 completed. Loss: 0.7397
+2024-10-01 17:11:58,268 - INFO - Epoch 1200 completed. Loss: 0.7159
+2024-10-01 17:12:33,442 - INFO - Epoch 1300 completed. Loss: 0.6976
+2024-10-01 17:13:12,114 - INFO - Epoch 1400 completed. Loss: 0.6739
+2024-10-01 17:13:49,598 - INFO - Epoch 1500 completed. Loss: 0.6454
+2024-10-01 17:14:27,399 - INFO - Epoch 1600 completed. Loss: 0.6387
+2024-10-01 17:15:00,761 - INFO - Epoch 1700 completed. Loss: 0.6782
+2024-10-01 17:15:39,017 - INFO - Epoch 1800 completed. Loss: 0.6649
+2024-10-01 17:16:15,633 - INFO - Epoch 1900 completed. Loss: 0.6693
+2024-10-01 17:16:54,766 - INFO - Epoch 2000 completed. Loss: 0.6387
+2024-10-01 17:17:23,579 - INFO - Epoch 2100 completed. Loss: 0.6227
+2024-10-01 17:17:52,428 - INFO - Epoch 2200 completed. Loss: 0.6252
+2024-10-01 17:18:30,201 - INFO - Epoch 2300 completed. Loss: 0.6292
+2024-10-01 17:19:08,398 - INFO - Epoch 2400 completed. Loss: 0.6467
+2024-10-01 17:19:45,213 - INFO - Epoch 2500 completed. Loss: 0.6400
+2024-10-01 17:20:20,556 - INFO - Epoch 2600 completed. Loss: 0.6209
+2024-10-01 17:20:50,430 - INFO - Epoch 2700 completed. Loss: 0.6212
+2024-10-01 17:21:24,999 - INFO - Epoch 2800 completed. Loss: 0.6150
+2024-10-01 17:21:46,261 - INFO - Epoch 2900 completed. Loss: 0.5633
+2024-10-01 17:22:20,344 - INFO - Epoch 3000 completed. Loss: 0.5813
+2024-10-01 17:22:50,715 - INFO - Epoch 3100 completed. Loss: 0.5890
+2024-10-01 17:23:28,230 - INFO - Epoch 3200 completed. Loss: 0.6016
+2024-10-01 17:24:02,472 - INFO - Epoch 3300 completed. Loss: 0.5691
+2024-10-01 17:24:34,872 - INFO - Epoch 3400 completed. Loss: 0.5670
+2024-10-01 17:25:08,903 - INFO - Epoch 3500 completed. Loss: 0.5753
+2024-10-01 17:25:32,703 - INFO - Epoch 3600 completed. Loss: 0.5481
+2024-10-01 17:25:53,535 - INFO - Epoch 3700 completed. Loss: 0.5484
+2024-10-01 17:26:24,869 - INFO - Epoch 3800 completed. Loss: 0.5390
+2024-10-01 17:26:55,766 - INFO - Epoch 3900 completed. Loss: 0.5503
+2024-10-01 17:27:30,461 - INFO - Epoch 4000 completed. Loss: 0.5470
+2024-10-01 17:28:06,911 - INFO - Epoch 4100 completed. Loss: 0.5250
+2024-10-01 17:28:42,103 - INFO - Epoch 4200 completed. Loss: 0.5186
+2024-10-01 17:29:19,555 - INFO - Epoch 4300 completed. Loss: 0.5218
+2024-10-01 17:29:48,577 - INFO - Epoch 4400 completed. Loss: 0.5422
+2024-10-01 17:30:16,859 - INFO - Epoch 4500 completed. Loss: 0.5073
+2024-10-01 17:30:52,336 - INFO - Epoch 4600 completed. Loss: 0.5307
+2024-10-01 17:31:29,635 - INFO - Epoch 4700 completed. Loss: 0.5166
+2024-10-01 17:32:05,421 - INFO - Epoch 4800 completed. Loss: 0.5119
+2024-10-01 17:32:42,171 - INFO - Epoch 4900 completed. Loss: 0.5051
+2024-10-01 17:33:18,785 - INFO - Epoch 5000 completed. Loss: 0.5174
+2024-10-01 17:33:51,065 - INFO - Epoch 5100 completed. Loss: 0.5118
+2024-10-01 17:34:26,117 - INFO - Epoch 5200 completed. Loss: 0.4799
+2024-10-01 17:34:50,930 - INFO - Epoch 5300 completed. Loss: 0.4852
+2024-10-01 17:35:15,288 - INFO - Epoch 5400 completed. Loss: 0.4959
+2024-10-01 17:35:37,304 - INFO - Epoch 5500 completed. Loss: 0.4889
+2024-10-01 17:36:02,857 - INFO - Epoch 5600 completed. Loss: 0.4940
+2024-10-01 17:36:33,249 - INFO - Epoch 5700 completed. Loss: 0.5045
+2024-10-01 17:37:11,669 - INFO - Epoch 5800 completed. Loss: 0.4913
+2024-10-01 17:37:45,964 - INFO - Epoch 5900 completed. Loss: 0.4996
+2024-10-01 17:38:17,518 - INFO - Epoch 6000 completed. Loss: 0.4871
+2024-10-01 17:38:52,917 - INFO - Epoch 6100 completed. Loss: 0.4793
+2024-10-01 17:39:27,096 - INFO - Epoch 6200 completed. Loss: 0.4972
+2024-10-01 17:39:51,450 - INFO - Epoch 6300 completed. Loss: 0.4777
+2024-10-01 17:40:12,490 - INFO - Epoch 6400 completed. Loss: 0.4777
+2024-10-01 17:40:40,824 - INFO - Epoch 6500 completed. Loss: 0.4716
+2024-10-01 17:41:16,575 - INFO - Epoch 6600 completed. Loss: 0.4967
+2024-10-01 17:41:52,342 - INFO - Epoch 6700 completed. Loss: 0.4777
+2024-10-01 17:42:25,018 - INFO - Epoch 6800 completed. Loss: 0.4610
+2024-10-01 17:43:01,446 - INFO - Epoch 6900 completed. Loss: 0.4790
+2024-10-01 17:43:39,959 - INFO - Epoch 7000 completed. Loss: 0.4691
+2024-10-01 17:44:07,733 - INFO - Epoch 7100 completed. Loss: 0.4645
+2024-10-01 17:44:27,429 - INFO - Epoch 7200 completed. Loss: 0.4530
+2024-10-01 17:44:49,807 - INFO - Epoch 7300 completed. Loss: 0.4677
+2024-10-01 17:45:18,188 - INFO - Epoch 7400 completed. Loss: 0.4625
+2024-10-01 17:45:55,184 - INFO - Epoch 7500 completed. Loss: 0.4467
+2024-10-01 17:46:28,197 - INFO - Epoch 7600 completed. Loss: 0.4708
+2024-10-01 17:46:58,830 - INFO - Epoch 7700 completed. Loss: 0.4553
+2024-10-01 17:47:34,419 - INFO - Epoch 7800 completed. Loss: 0.4657
+2024-10-01 17:47:54,488 - INFO - Epoch 7900 completed. Loss: 0.4475
+2024-10-01 17:48:30,068 - INFO - Epoch 8000 completed. Loss: 0.4558
+2024-10-01 17:49:04,440 - INFO - Epoch 8100 completed. Loss: 0.4769
+2024-10-01 17:49:42,350 - INFO - Epoch 8200 completed. Loss: 0.4587
+2024-10-01 17:50:08,423 - INFO - Epoch 8300 completed. Loss: 0.4705
+2024-10-01 17:50:40,310 - INFO - Epoch 8400 completed. Loss: 0.4466
+2024-10-01 17:51:12,952 - INFO - Epoch 8500 completed. Loss: 0.4852
+2024-10-01 17:51:43,248 - INFO - Epoch 8600 completed. Loss: 0.4649
+2024-10-01 17:52:09,505 - INFO - Epoch 8700 completed. Loss: 0.4539
+2024-10-01 17:52:36,048 - INFO - Epoch 8800 completed. Loss: 0.4875
+2024-10-01 17:53:02,263 - INFO - Epoch 8900 completed. Loss: 0.4656
+2024-10-01 17:53:30,499 - INFO - Epoch 9000 completed. Loss: 0.4617
+2024-10-01 17:54:07,931 - INFO - Epoch 9100 completed. Loss: 0.4619
+2024-10-01 17:54:43,492 - INFO - Epoch 9200 completed. Loss: 0.4494
+2024-10-01 17:55:09,870 - INFO - Epoch 9300 completed. Loss: 0.4430
+2024-10-01 17:55:45,796 - INFO - Epoch 9400 completed. Loss: 0.4568
+2024-10-01 17:56:21,590 - INFO - Epoch 9500 completed. Loss: 0.4285
+2024-10-01 17:56:58,516 - INFO - Epoch 9600 completed. Loss: 0.4468
+2024-10-01 17:57:29,718 - INFO - Epoch 9700 completed. Loss: 0.4576
+2024-10-01 17:57:57,400 - INFO - Epoch 9800 completed. Loss: 0.4671
+2024-10-01 17:58:29,791 - INFO - Epoch 9900 completed. Loss: 0.4406
+2024-10-01 17:59:01,997 - INFO - Epoch 10000 completed. Loss: 0.4415
+2024-10-01 17:59:38,962 - INFO - Epoch 10100 completed. Loss: 0.4457
+2024-10-01 18:00:13,618 - INFO - Epoch 10200 completed. Loss: 0.4550
+2024-10-01 18:00:41,310 - INFO - Epoch 10300 completed. Loss: 0.4490
+2024-10-01 18:01:16,996 - INFO - Epoch 10400 completed. Loss: 0.4549
+2024-10-01 18:01:54,270 - INFO - Epoch 10500 completed. Loss: 0.4479
+2024-10-01 18:02:20,462 - INFO - Epoch 10600 completed. Loss: 0.4633
+2024-10-01 18:02:54,061 - INFO - Epoch 10700 completed. Loss: 0.4339
+2024-10-01 18:03:27,098 - INFO - Epoch 10800 completed. Loss: 0.4432
+2024-10-01 18:04:02,278 - INFO - Epoch 10900 completed. Loss: 0.4401
+2024-10-01 18:04:34,247 - INFO - Epoch 11000 completed. Loss: 0.4738
+2024-10-01 18:05:07,949 - INFO - Epoch 11100 completed. Loss: 0.4505
+2024-10-01 18:05:31,433 - INFO - Epoch 11200 completed. Loss: 0.4451
+2024-10-01 18:06:07,777 - INFO - Epoch 11300 completed. Loss: 0.4393
+2024-10-01 18:06:45,624 - INFO - Epoch 11400 completed. Loss: 0.4252
+2024-10-01 18:07:21,534 - INFO - Epoch 11500 completed. Loss: 0.4291
+2024-10-01 18:07:54,970 - INFO - Epoch 11600 completed. Loss: 0.4536
+2024-10-01 18:08:26,514 - INFO - Epoch 11700 completed. Loss: 0.4418
+2024-10-01 18:09:04,402 - INFO - Epoch 11800 completed. Loss: 0.4409
+2024-10-01 18:09:40,022 - INFO - Epoch 11900 completed. Loss: 0.4657
+2024-10-01 18:10:17,876 - INFO - Epoch 12000 completed. Loss: 0.4554
+2024-10-01 18:10:51,153 - INFO - Epoch 12100 completed. Loss: 0.4435
+2024-10-01 18:11:29,360 - INFO - Epoch 12200 completed. Loss: 0.4354
+2024-10-01 18:12:06,721 - INFO - Epoch 12300 completed. Loss: 0.4385
+2024-10-01 18:12:42,252 - INFO - Epoch 12400 completed. Loss: 0.4182
+2024-10-01 18:13:13,233 - INFO - Epoch 12500 completed. Loss: 0.4458
+2024-10-01 18:13:47,955 - INFO - Epoch 12600 completed. Loss: 0.4615
+2024-10-01 18:14:24,423 - INFO - Epoch 12700 completed. Loss: 0.4243
+2024-10-01 18:14:59,336 - INFO - Epoch 12800 completed. Loss: 0.4461
+2024-10-01 18:15:33,191 - INFO - Epoch 12900 completed. Loss: 0.4468
+2024-10-01 18:16:02,027 - INFO - Epoch 13000 completed. Loss: 0.4511
+2024-10-01 18:16:33,073 - INFO - Epoch 13100 completed. Loss: 0.4547
+2024-10-01 18:17:03,633 - INFO - Epoch 13200 completed. Loss: 0.4390
+2024-10-01 18:17:42,263 - INFO - Epoch 13300 completed. Loss: 0.4411
+2024-10-01 18:18:18,121 - INFO - Epoch 13400 completed. Loss: 0.4596
+2024-10-01 18:18:54,973 - INFO - Epoch 13500 completed. Loss: 0.4319
+2024-10-01 18:19:24,521 - INFO - Epoch 13600 completed. Loss: 0.4415
+2024-10-01 18:19:56,634 - INFO - Epoch 13700 completed. Loss: 0.4692
+2024-10-01 18:20:32,577 - INFO - Epoch 13800 completed. Loss: 0.4390
+2024-10-01 18:21:08,634 - INFO - Epoch 13900 completed. Loss: 0.4380
+2024-10-01 18:21:46,449 - INFO - Epoch 14000 completed. Loss: 0.4159
+2024-10-01 18:22:18,558 - INFO - Epoch 14100 completed. Loss: 0.4372
+2024-10-01 18:22:55,981 - INFO - Epoch 14200 completed. Loss: 0.4473
+2024-10-01 18:23:31,154 - INFO - Epoch 14300 completed. Loss: 0.4352
+2024-10-01 18:24:03,886 - INFO - Epoch 14400 completed. Loss: 0.4405
+2024-10-01 18:24:40,508 - INFO - Epoch 14500 completed. Loss: 0.4621
+2024-10-01 18:25:18,356 - INFO - Epoch 14600 completed. Loss: 0.4172
+2024-10-01 18:25:47,822 - INFO - Epoch 14700 completed. Loss: 0.4467
+2024-10-01 18:26:24,221 - INFO - Epoch 14800 completed. Loss: 0.4334
+2024-10-01 18:26:46,720 - INFO - Epoch 14900 completed. Loss: 0.4319
+2024-10-01 18:27:11,638 - INFO - Epoch 15000 completed. Loss: 0.4393
+2024-10-01 18:27:40,683 - INFO - Epoch 15100 completed. Loss: 0.4371
+2024-10-01 18:28:15,277 - INFO - Epoch 15200 completed. Loss: 0.4458
+2024-10-01 18:28:50,524 - INFO - Epoch 15300 completed. Loss: 0.4498
+2024-10-01 18:29:27,629 - INFO - Epoch 15400 completed. Loss: 0.4532
+2024-10-01 18:30:02,508 - INFO - Epoch 15500 completed. Loss: 0.4251
+2024-10-01 18:30:40,836 - INFO - Epoch 15600 completed. Loss: 0.4483
+2024-10-01 18:31:13,125 - INFO - Epoch 15700 completed. Loss: 0.4359
+2024-10-01 18:31:47,222 - INFO - Epoch 15800 completed. Loss: 0.4503
+2024-10-01 18:32:20,005 - INFO - Epoch 15900 completed. Loss: 0.4470
+2024-10-01 18:32:46,078 - INFO - Epoch 16000 completed. Loss: 0.4448
+2024-10-01 18:33:21,463 - INFO - Epoch 16100 completed. Loss: 0.4297
+2024-10-01 18:33:58,138 - INFO - Epoch 16200 completed. Loss: 0.4476
+2024-10-01 18:34:24,098 - INFO - Epoch 16300 completed. Loss: 0.4412
+2024-10-01 18:34:58,030 - INFO - Epoch 16400 completed. Loss: 0.4386
+2024-10-01 18:35:36,609 - INFO - Epoch 16500 completed. Loss: 0.4174
+2024-10-01 18:36:07,922 - INFO - Epoch 16600 completed. Loss: 0.4343
+2024-10-01 18:36:45,252 - INFO - Epoch 16700 completed. Loss: 0.4370
+2024-10-01 18:37:22,197 - INFO - Epoch 16800 completed. Loss: 0.4471
+2024-10-01 18:37:58,843 - INFO - Epoch 16900 completed. Loss: 0.4362
+2024-10-01 18:38:29,352 - INFO - Epoch 17000 completed. Loss: 0.4690
+2024-10-01 18:39:04,462 - INFO - Epoch 17100 completed. Loss: 0.4471
+2024-10-01 18:39:24,618 - INFO - Epoch 17200 completed. Loss: 0.4438
+2024-10-01 18:39:50,099 - INFO - Epoch 17300 completed. Loss: 0.4436
+2024-10-01 18:40:27,482 - INFO - Epoch 17400 completed. Loss: 0.4196
+2024-10-01 18:41:05,939 - INFO - Epoch 17500 completed. Loss: 0.4520
+2024-10-01 18:41:43,221 - INFO - Epoch 17600 completed. Loss: 0.4293
+2024-10-01 18:42:08,805 - INFO - Epoch 17700 completed. Loss: 0.4484
+2024-10-01 18:42:43,911 - INFO - Epoch 17800 completed. Loss: 0.4676
+2024-10-01 18:43:17,379 - INFO - Epoch 17900 completed. Loss: 0.4466
+2024-10-01 18:43:56,010 - INFO - Epoch 18000 completed. Loss: 0.4301
+2024-10-01 18:44:32,927 - INFO - Epoch 18100 completed. Loss: 0.4389
+2024-10-01 18:45:11,004 - INFO - Epoch 18200 completed. Loss: 0.4226
+2024-10-01 18:45:46,333 - INFO - Epoch 18300 completed. Loss: 0.4588
+2024-10-01 18:46:24,774 - INFO - Epoch 18400 completed. Loss: 0.4170
+2024-10-01 18:47:02,828 - INFO - Epoch 18500 completed. Loss: 0.4171
+2024-10-01 18:47:37,672 - INFO - Epoch 18600 completed. Loss: 0.4432
+2024-10-01 18:48:10,187 - INFO - Epoch 18700 completed. Loss: 0.4447
+2024-10-01 18:48:39,758 - INFO - Epoch 18800 completed. Loss: 0.4381
+2024-10-01 18:49:04,904 - INFO - Epoch 18900 completed. Loss: 0.4417
+2024-10-01 18:49:41,347 - INFO - Epoch 19000 completed. Loss: 0.4313
+2024-10-01 18:50:18,409 - INFO - Epoch 19100 completed. Loss: 0.4422
+2024-10-01 18:50:53,065 - INFO - Epoch 19200 completed. Loss: 0.4409
+2024-10-01 18:51:24,008 - INFO - Epoch 19300 completed. Loss: 0.4169
+2024-10-01 18:51:58,643 - INFO - Epoch 19400 completed. Loss: 0.4691
+2024-10-01 18:52:28,903 - INFO - Epoch 19500 completed. Loss: 0.4481
+2024-10-01 18:53:06,472 - INFO - Epoch 19600 completed. Loss: 0.4309
+2024-10-01 18:53:32,986 - INFO - Epoch 19700 completed. Loss: 0.4232
+2024-10-01 18:54:00,178 - INFO - Epoch 19800 completed. Loss: 0.4453
+2024-10-01 18:54:37,038 - INFO - Epoch 19900 completed. Loss: 0.4389
+2024-10-01 18:55:00,816 - INFO - Epoch 20000 completed. Loss: 0.4467
+2024-10-02 11:00:01,397 - INFO - Stage 4: Preparing data for classification...
+2024-10-02 11:00:01,418 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-10-02 11:00:01,563 - INFO - Bulk tensor saved to result/Metabric_20241001_170514/bulk_tensor.pt
+2024-10-02 11:00:01,563 - INFO - Embeddings saved to result/Metabric_20241001_170514/embedding.pt
+2024-10-02 11:00:01,563 - INFO - Stage 6: Evaluate survival
+2024-10-02 11:00:01,563 - INFO - Preparing Cox model
+2024-10-02 11:00:01,577 - INFO - Training Cox model on bulk data...
+2024-10-02 11:03:33,646 - INFO - Cox Model Summary:
+2024-10-02 11:03:33,677 - INFO - 
+               coef  exp(coef)  se(coef)  coef lower 95%  coef upper 95%  ...  exp(coef) upper 95%  cmp to         z         p  -log2(p)
+covariate                                                                 ...                                                           
+0          0.617860   1.854955  1.900631       -3.107308        4.343029  ...            76.940217     0.0  0.325082  0.745119  0.424457
+1          0.017521   1.017676  1.512906       -2.947719        2.982762  ...            19.742265     0.0  0.011581  0.990760  0.013393
+2          0.789944   2.203274  1.817604       -2.772495        4.352384  ...            77.663361     0.0  0.434607  0.663847  0.591076
+3         -2.416579   0.089226  3.548924       -9.372341        4.539184  ...            93.614361     0.0 -0.680933  0.495914  1.011838
+4         -0.151954   0.859028  1.375188       -2.847272        2.543365  ...            12.722405     0.0 -0.110497  0.912016  0.132870
+...             ...        ...       ...             ...             ...  ...                  ...     ...       ...       ...       ...
+1366      -0.193540   0.824037  1.979962       -4.074194        3.687115  ...            39.929474     0.0 -0.097749  0.922132  0.116956
+1367       0.243862   1.276168  1.576640       -2.846297        3.334020  ...            28.050875     0.0  0.154672  0.877080  0.189219
+1368      -1.902232   0.149235  2.579376       -6.957715        3.153251  ...            23.412059     0.0 -0.737478  0.460832  1.117688
+1369      -0.214745   0.806747  2.370360       -4.860566        4.431076  ...            84.021745     0.0 -0.090596  0.927814  0.108093
+1370       0.812734   2.254063  1.484339       -2.096516        3.721985  ...            41.346374     0.0  0.547540  0.584008  0.775940
+
+[1371 rows x 11 columns]
+2024-10-02 11:03:33,700 - INFO - Concordance Index: 0.9316
+2024-10-02 11:03:33,737 - INFO - Test Concordance Index: 0.5227
+2024-10-02 11:03:33,737 - INFO - Preparing Cox model for Barlow Twins embeddings...
+2024-10-02 11:03:33,750 - INFO - Training Cox model on Barlow Twins embeddings...
+2024-10-02 11:03:34,193 - INFO - Cox Model Summary:
+2024-10-02 11:03:34,221 - INFO - 
+               coef  exp(coef)  se(coef)  coef lower 95%  coef upper 95%  ...  exp(coef) upper 95%  cmp to         z         p  -log2(p)
+covariate                                                                 ...                                                           
+0          0.244848   1.277427  0.464935       -0.666409        1.156104  ...             3.177529     0.0  0.526628  0.598452  0.740692
+1         -1.193593   0.303130  0.675347       -2.517249        0.130062  ...             1.138899     0.0 -1.767379  0.077165  3.695913
+2          0.494677   1.639968  0.268215       -0.031015        1.020368  ...             2.774217     0.0  1.844328  0.065135  3.940417
+3         -0.174834   0.839597  0.333326       -0.828141        0.478474  ...             1.613609     0.0 -0.524512  0.599922  0.737153
+4         -0.023621   0.976656  0.355965       -0.721300        0.674058  ...             1.962184     0.0 -0.066357  0.947093  0.078421
+...             ...        ...       ...             ...             ...  ...                  ...     ...       ...       ...       ...
+59         0.070372   1.072907  0.399396       -0.712430        0.853174  ...             2.347084     0.0  0.176196  0.860140  0.217356
+60        -0.465104   0.628069  0.492454       -1.430297        0.500088  ...             1.648867     0.0 -0.944462  0.344934  1.535609
+61         0.027289   1.027665  0.486966       -0.927146        0.981724  ...             2.669055     0.0  0.056039  0.955311  0.065958
+62        -0.225628   0.798015  0.181010       -0.580400        0.129144  ...             1.137854     0.0 -1.246498  0.212582  2.233910
+63        -0.315758   0.729236  0.531120       -1.356735        0.725218  ...             2.065182     0.0 -0.594514  0.552169  0.856819
+
+[64 rows x 11 columns]
+2024-10-02 11:03:34,244 - INFO - Concordance Index: 0.6151
+2024-10-02 11:03:34,255 - INFO - Test Concordance Index: 0.5657
+2024-10-02 11:03:34,255 - INFO - All stages completed.

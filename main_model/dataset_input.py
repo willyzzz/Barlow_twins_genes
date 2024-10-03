@@ -118,35 +118,60 @@ def filter_genes_by_variance(bulk_data, sampled_cells, variance_threshold):
     combined_var = bulk_var + sampled_var
     var_cutoff = np.sort(combined_var)[-int(combined_var.shape[0] * variance_threshold)]
     selected_genes = combined_var > var_cutoff
-    return bulk_data[:, selected_genes], sampled_cells[:, selected_genes]
+    return bulk_data[:, selected_genes], sampled_cells[:, selected_genes], selected_genes
 
-def generate_distortions(bulk_data, sampled_cells, lambda_noise):
+
+def generate_distortions(bulk_data, sampled_cells, lambda_noise, sample_size):
+    """
+    Generate distortions for the given bulk data using a set of sampled single cell data.
+
+    Parameters:
+    - bulk_data: Bulk expression data (numpy array).
+    - sampled_cells: Sampled single cell data (numpy array).
+    - lambda_noise: Noise weight for distortion.
+
+    Returns:
+    - distortions_tensor: Distorted data as a numpy array.
+    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Convert bulk data and sampled_cells to tensors
     bulk_tensor = torch.tensor(bulk_data, dtype=torch.float32).to(device)
     sampled_tensor = torch.tensor(sampled_cells, dtype=torch.float32).to(device)
 
     distortions = []
+
+    # Generate different sampled cells for each bulk sample
     for i in range(bulk_tensor.shape[0]):
-        mean_values = torch.mean(sampled_tensor, dim=0)
-        distorted = (1 - lambda_noise) * bulk_tensor[i] + lambda_noise * mean_values
+        # Randomly sample a new set of cells from sampled_tensor for each bulk sample
+        indices = torch.randint(0, sampled_tensor.shape[0], (sample_size,), device=device)  # 1000 cells for each bulk sample
+        random_sampled_cells = sampled_tensor[indices]
+
+        # Calculate the mean values of the randomly sampled cells
+        mean_values = torch.mean(random_sampled_cells, dim=0)
+
+        # Generate the distorted sample using a combination of bulk sample and mean values of sampled cells
+        distorted = bulk_tensor[i] + mean_values
         distortions.append(distorted)
-    
+
+    # Stack all distorted samples into a single tensor
     distortions_tensor = torch.stack(distortions)
+
     return distortions_tensor.cpu().numpy()
 
+
 class TensorDataset(Dataset):
-    def __init__(self, tensor1, tensor2, tensor3, tensor4):
-        assert tensor1.size(0) == tensor2.size(0) == tensor3.size(0) == tensor4.size(0)
+    def __init__(self, tensor1, tensor2, tensor3):
+        assert tensor1.size(0) == tensor2.size(0) == tensor3.size(0)
         self.tensor1 = tensor1
         self.tensor2 = tensor2
         self.tensor3 = tensor3
-        self.tensor4 = tensor4
 
     def __len__(self):
         return self.tensor1.size(0)  # Number of samples
 
     def __getitem__(self, idx):
-        return self.tensor1[idx], self.tensor2[idx], self.tensor3[idx], self.tensor4
+        return self.tensor1[idx], self.tensor2[idx], self.tensor3[idx]
 
 def pat_preprosses(patient_df):
     stage_list = ['American Joint Committee on Cancer Tumor Stage Code',
@@ -179,8 +204,49 @@ def pat_preprosses(patient_df):
 
     return overall_stages
 
+def filter_bulk_data(bulk, stage_df=None, survival_df=None, eval_metric='stage'):
+    """
+    Filter bulk data based on the evaluation metric.
 
-def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
+    Parameters:
+    - bulk: The bulk data DataFrame.
+    - stage_df: The stage data DataFrame (optional).
+    - survival_df: The survival data DataFrame (optional).
+    - eval_metric: The evaluation metric to use ('stage' or 'survival').
+
+    Returns:
+    - filtered_bulk: The filtered bulk data.
+    - relevant_data: The relevant stage or survival data.
+    """
+    if eval_metric == 'stage':
+        common_index = bulk.index.intersection(stage_df.index)
+        filtered_bulk = bulk.loc[common_index]
+        relevant_data = stage_df.loc[common_index]
+
+        filtered_bulk = filtered_bulk.sort_index()
+        relevant_data = relevant_data.sort_index()
+
+        print(f"After filtering: Bulk data shape: {filtered_bulk.shape}, Number of patients: {len(relevant_data)}")
+
+        if not (filtered_bulk.index == relevant_data.index).all():
+            raise ValueError("Bulk data and stage data indices do not match!")
+
+    elif eval_metric == 'survival':
+        common_index = bulk.index.intersection(survival_df.index)
+        filtered_bulk = bulk.loc[common_index]
+        relevant_data = survival_df.loc[common_index]
+
+        filtered_bulk = filtered_bulk.sort_index()
+        relevant_data = relevant_data.sort_index()
+
+        print(f"After filtering: Bulk data shape: {filtered_bulk.shape}, Number of patients: {len(relevant_data)}")
+
+    else:
+        raise ValueError("Unsupported evaluation metric")
+
+    return filtered_bulk, relevant_data
+
+def Barlow_dataloader(sc_path, bulk_path, stage_path, survival_path, batchsize):
     set_seed(42)
 
     sc_data = ad.read_h5ad(sc_path)
@@ -188,6 +254,7 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     gene_names = sc_data.var['feature_name']
     sc_data_exp = sc_data.X.toarray()
     sc_df = pd.DataFrame(sc_data_exp, index=cell_names, columns=gene_names)
+    survival_df = pd.read_csv(survival_path, sep=',', index_col=0)
     print(f" Single-cell data loaded. Shape: {sc_df.shape}")
 
     if config['testing_dataset_name'].startswith('TCGA'):
@@ -195,8 +262,8 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
         bulk.index = [i[:-3] for i in bulk.index]
         bulk = bulk.apply(lambda row: row.fillna(row.mean()), axis=1)
 
-        patient_df = pd.read_csv(patient_path, sep='\t', index_col=0)
-        overall_stages = pat_preprosses(patient_df)
+        stage_df = pd.read_csv(stage_path, sep='\t', index_col=0)
+        overall_stages = pat_preprosses(stage_df)
         num_classes = len(overall_stages['overall_stage_simplified'].unique())
 
     elif config['testing_dataset_name'].startswith('Metabric'):
@@ -204,9 +271,9 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
         bulk = bulk.drop(bulk.columns[0], axis=1).T
         bulk = bulk.apply(lambda row: row.fillna(row.mean()), axis=1)
 
-        patient_df = pd.read_csv(patient_path, sep='\t', index_col=0)
-        patient_df = patient_df.set_index(patient_df.columns[0])
-        num_classes = len(patient_df['Tumor Stage'].unique())
+        stage_df = pd.read_csv(stage_path, sep='\t', index_col=0)
+        stage_df = stage_df.set_index(stage_df.columns[0])
+        num_classes = len(stage_df['Tumor Stage'].unique())
 
     print(f"Bulk data loaded. Shape: {bulk.shape}")
     print(f"Number of unique classes: {num_classes}")
@@ -217,50 +284,39 @@ def Barlow_dataloader(sc_path, bulk_path, patient_path, batchsize):
     sc_df = sc_df[common_genes]
     bulk = bulk[common_genes]
 
-    common_index = bulk.index.intersection(patient_df.index)
-    bulk = bulk.loc[common_index]
-    patient_df = patient_df.loc[common_index]
-    
-    bulk = bulk.sort_index()
-    patient_df = patient_df.sort_index()
-    
-    print(f"After filtering: Bulk data shape: {bulk.shape}, Number of patients: {len(patient_df)}")
-    
-    if not (bulk.index == patient_df.index).all():
-        raise ValueError("Bulk data and patient data indices do not match!")
+    # Filter bulk data based on evaluation metric
+    if config['eval_metric'] == 'stage':
+        bulk, stage_df = filter_bulk_data(bulk, stage_df=stage_df, eval_metric='stage')
+    elif config['eval_metric'] == 'survival':
+        bulk, survival_df = filter_bulk_data(bulk, survival_df=survival_df, eval_metric='survival')
 
-    # Step 1: Sample single cells
-    sampled_cells = sample_single_cells(sc_df, sample_size=config['sample_size'])
+    # Step 1: Apply scaling
+    bulk_scaled, sampled_scaled = apply_scaling(bulk.values, sc_df.values, scaling_method=config['scaling_method'])
 
-    # Step 2: Plot bulk vs sampled single cells distribution
-    plot_bulk_vs_sampled_distribution(bulk, sampled_cells, feature_indices=None, bins=50)
-
-    # Step 3: Apply scaling
-    bulk_scaled, sampled_scaled = apply_scaling(bulk.values, sampled_cells.values, scaling_method=config['scaling_method'])
-
-    # Step 4: Filter genes by variance
-    bulk_filtered, sampled_filtered = filter_genes_by_variance(bulk_scaled, sampled_scaled, variance_threshold=config['variance_threshold'])
+    # Step 2: Filter genes by variance
+    bulk_filtered, sampled_filtered, selected_genes = filter_genes_by_variance(bulk_scaled, sampled_scaled, variance_threshold=config['variance_threshold'])
 
     plot_bulk_vs_sampled_distribution(bulk_filtered, sampled_filtered, feature_indices=None, bins=50)
-    # Step 5: Generate distortions
-    distortion1 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=0.1)
-    distortion2 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=0.1)
+
+    # Step 3: Generate distortions with different sampled single cells each time
+    distortion1 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=config['lambda_noise'], sample_size=config['sample_size'])
+    distortion2 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=config['lambda_noise'], sample_size=config['sample_size'])
     print("Distortions generated.")
 
-    plot_bulk_vs_distortion_distribution(bulk_filtered, distortion1, distortion2, feature_indices=None, bins=50)
+    plot_bulk_vs_distortion_distribution(bulk_filtered, distortion1, distortion2)
 
+    # Convert to tensors while keeping the original index
     bulk_tensor = torch.tensor(bulk_filtered, dtype=torch.float32)
     distortion1_tensor = torch.tensor(distortion1, dtype=torch.float32)
     distortion2_tensor = torch.tensor(distortion2, dtype=torch.float32)
+
     if config['testing_dataset_name'].startswith('TCGA'):
         stages_tensor = torch.tensor(np.array(overall_stages['overall_stage_simplified']), dtype=torch.float32)
     elif config['testing_dataset_name'].startswith('Metabric'):
-        stages_tensor = torch.tensor(np.array(patient_df['Tumor Stage']), dtype=torch.float32)
+        stages_tensor = torch.tensor(np.array(stage_df['Tumor Stage']), dtype=torch.float32)
 
-    dataset = TensorDataset(bulk_tensor, distortion1_tensor, distortion2_tensor, stages_tensor)
+    dataset = TensorDataset(bulk_tensor, distortion1_tensor, distortion2_tensor)
     dataloader = DataLoader(dataset, batch_size=batchsize, shuffle=True)
     print(f"Dataloader created. Number of batches: {len(dataloader)}")
 
-    bulk_index = bulk.index
-
-    return dataloader, bulk_tensor, stages_tensor, num_classes, bulk_index
+    return dataloader, bulk_tensor, stages_tensor, survival_df, num_classes, bulk

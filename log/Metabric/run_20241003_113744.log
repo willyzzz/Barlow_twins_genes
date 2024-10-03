@@ -1,0 +1,93 @@
+2024-10-03 11:37:44,450 - INFO - Using device: cuda
+2024-10-03 11:37:44,451 - INFO - Stage 1: Loading data...
+2024-10-03 11:38:30,384 - INFO - Number of classes: 5
+2024-10-03 11:38:30,384 - INFO - Stage 2: Initializing models...
+2024-10-03 11:38:30,553 - INFO - Configuration Parameters:
+2024-10-03 11:38:30,553 - INFO - seed: 42
+2024-10-03 11:38:30,553 - INFO - batchsize: 128
+2024-10-03 11:38:30,553 - INFO - sample_size: 1000
+2024-10-03 11:38:30,553 - INFO - lambda_noise: 0.1
+2024-10-03 11:38:30,553 - INFO - variance_threshold: 0.95
+2024-10-03 11:38:30,553 - INFO - output_dim: 64
+2024-10-03 11:38:30,554 - INFO - hidden_dim: 256
+2024-10-03 11:38:30,554 - INFO - project_dim: 256
+2024-10-03 11:38:30,554 - INFO - mlp_hidden_dim: 64
+2024-10-03 11:38:30,554 - INFO - learning_rate: 0.0001
+2024-10-03 11:38:30,554 - INFO - weight_decay: 0.001
+2024-10-03 11:38:30,554 - INFO - num_epochs: 5000
+2024-10-03 11:38:30,554 - INFO - mlp_epochs: 5000
+2024-10-03 11:38:30,554 - INFO - loss_lambda_param: 0.005
+2024-10-03 11:38:30,554 - INFO - scaling_method: minmax
+2024-10-03 11:38:30,554 - INFO - eval_metric: survival
+2024-10-03 11:38:30,554 - INFO - model_save_path: ./model_checkpoints
+2024-10-03 11:38:30,554 - INFO - fra_save_path: ./fra_pre
+2024-10-03 11:38:30,554 - INFO - training_dataset_name: All
+2024-10-03 11:38:30,554 - INFO - testing_dataset_name: Metabric
+2024-10-03 11:38:30,554 - INFO - device: cuda
+2024-10-03 11:38:30,554 - INFO - sc_path: ./cancer_single_cell_data/processed_data.h5ad
+2024-10-03 11:38:30,554 - INFO - bulk_path: ./cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-10-03 11:38:30,554 - INFO - stage_path: ./cancer_brca_metabric_bulk_data/Tumor_Stage.txt
+2024-10-03 11:38:30,554 - INFO - survival_path: ./Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt
+2024-10-03 11:38:30,554 - INFO - Model Architectures:
+2024-10-03 11:38:30,554 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=16195, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+  )
+)
+2024-10-03 11:38:30,554 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=256, bias=False)
+    (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): Linear(in_features=256, out_features=256, bias=False)
+    (4): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+    (6): Linear(in_features=256, out_features=256, bias=False)
+    (7): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  )
+)
+2024-10-03 11:38:30,554 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=16195, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-03 11:38:30,554 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-03 11:38:30,554 - INFO - Stage 3: Training Barlow Twins...
+2024-10-03 11:40:02,291 - INFO - Epoch 100 completed. Loss: 9.8065
+2024-10-03 11:41:33,430 - INFO - Epoch 200 completed. Loss: 7.4750
+2024-10-03 11:43:04,169 - INFO - Epoch 300 completed. Loss: 6.3127
+2024-10-03 11:44:35,712 - INFO - Epoch 400 completed. Loss: 5.7593
+2024-10-03 11:46:06,631 - INFO - Epoch 500 completed. Loss: 5.3094
+2024-10-03 11:47:38,101 - INFO - Epoch 600 completed. Loss: 4.9420
+2024-10-03 11:49:09,239 - INFO - Epoch 700 completed. Loss: 4.7921
+2024-10-03 11:50:40,557 - INFO - Epoch 800 completed. Loss: 4.7063
+2024-10-03 11:52:11,951 - INFO - Epoch 900 completed. Loss: 4.4168
+2024-10-03 11:53:43,452 - INFO - Epoch 1000 completed. Loss: 4.3127

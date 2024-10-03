@@ -1,0 +1,176 @@
+2024-10-01 14:24:35,359 - INFO - Using device: cuda
+2024-10-01 14:24:35,359 - INFO - Stage 1: Loading data...
+2024-10-01 14:24:57,655 - INFO - Number of classes: 5
+2024-10-01 14:24:57,656 - INFO - Stage 2: Initializing models...
+2024-10-01 14:24:57,706 - INFO - Configuration Parameters:
+2024-10-01 14:24:57,706 - INFO - seed: 42
+2024-10-01 14:24:57,706 - INFO - batchsize: 128
+2024-10-01 14:24:57,706 - INFO - sample_size: 2000
+2024-10-01 14:24:57,706 - INFO - lambda_noise: 0.2
+2024-10-01 14:24:57,706 - INFO - variance_threshold: 0.95
+2024-10-01 14:24:57,706 - INFO - output_dim: 64
+2024-10-01 14:24:57,706 - INFO - project_dim: 128
+2024-10-01 14:24:57,706 - INFO - mlp_hidden_dim: 64
+2024-10-01 14:24:57,706 - INFO - learning_rate: 0.0001
+2024-10-01 14:24:57,706 - INFO - weight_decay: 0.001
+2024-10-01 14:24:57,706 - INFO - num_epochs: 5000
+2024-10-01 14:24:57,706 - INFO - mlp_epochs: 5000
+2024-10-01 14:24:57,706 - INFO - loss_lambda_param: 0.005
+2024-10-01 14:24:57,707 - INFO - scaling_method: minmax
+2024-10-01 14:24:57,707 - INFO - eval_metric: survival
+2024-10-01 14:24:57,707 - INFO - model_save_path: ./model_checkpoints
+2024-10-01 14:24:57,707 - INFO - fra_save_path: ./fra_pre
+2024-10-01 14:24:57,707 - INFO - training_dataset_name: All
+2024-10-01 14:24:57,707 - INFO - testing_dataset_name: Metabric
+2024-10-01 14:24:57,707 - INFO - device: cuda
+2024-10-01 14:24:57,707 - INFO - sc_path: ./cancer_single_cell_data/processed_data.h5ad
+2024-10-01 14:24:57,707 - INFO - bulk_path: ./cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-10-01 14:24:57,707 - INFO - stage_path: ./cancer_brca_metabric_bulk_data/Tumor_Stage.txt
+2024-10-01 14:24:57,707 - INFO - survival_path: ./Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt
+2024-10-01 14:24:57,707 - INFO - Model Architectures:
+2024-10-01 14:24:57,707 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=1371, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+  )
+)
+2024-10-01 14:24:57,707 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=512, out_features=128, bias=True)
+  )
+)
+2024-10-01 14:24:57,707 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=1371, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-01 14:24:57,707 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-01 14:24:57,707 - INFO - Stage 3: Training Barlow Twins...
+2024-10-01 14:25:36,093 - INFO - Epoch 100 completed. Loss: 3.4518
+2024-10-01 14:26:12,924 - INFO - Epoch 200 completed. Loss: 2.5702
+2024-10-01 14:26:41,172 - INFO - Epoch 300 completed. Loss: 2.1784
+2024-10-01 14:27:14,214 - INFO - Epoch 400 completed. Loss: 1.8641
+2024-10-01 14:27:48,881 - INFO - Epoch 500 completed. Loss: 1.6305
+2024-10-01 14:28:25,402 - INFO - Epoch 600 completed. Loss: 1.4564
+2024-10-01 14:28:51,468 - INFO - Epoch 700 completed. Loss: 1.2913
+2024-10-01 14:29:23,689 - INFO - Epoch 800 completed. Loss: 1.1817
+2024-10-01 14:29:56,844 - INFO - Epoch 900 completed. Loss: 1.0938
+2024-10-01 14:30:26,359 - INFO - Epoch 1000 completed. Loss: 1.0771
+2024-10-01 14:31:02,878 - INFO - Epoch 1100 completed. Loss: 1.0051
+2024-10-01 14:31:37,153 - INFO - Epoch 1200 completed. Loss: 1.0055
+2024-10-01 14:32:05,174 - INFO - Epoch 1300 completed. Loss: 0.9826
+2024-10-01 14:32:34,703 - INFO - Epoch 1400 completed. Loss: 0.9594
+2024-10-01 14:33:10,560 - INFO - Epoch 1500 completed. Loss: 0.9810
+2024-10-01 14:33:48,293 - INFO - Epoch 1600 completed. Loss: 0.8932
+2024-10-01 14:34:24,094 - INFO - Epoch 1700 completed. Loss: 0.9158
+2024-10-01 14:34:52,094 - INFO - Epoch 1800 completed. Loss: 0.8592
+2024-10-01 14:35:30,050 - INFO - Epoch 1900 completed. Loss: 0.8644
+2024-10-01 14:36:06,969 - INFO - Epoch 2000 completed. Loss: 0.8947
+2024-10-01 14:36:41,525 - INFO - Epoch 2100 completed. Loss: 0.8563
+2024-10-01 14:37:18,220 - INFO - Epoch 2200 completed. Loss: 0.8482
+2024-10-01 14:37:54,517 - INFO - Epoch 2300 completed. Loss: 0.8538
+2024-10-01 14:38:30,624 - INFO - Epoch 2400 completed. Loss: 0.8327
+2024-10-01 14:38:58,742 - INFO - Epoch 2500 completed. Loss: 0.8585
+2024-10-01 14:39:30,917 - INFO - Epoch 2600 completed. Loss: 0.8085
+2024-10-01 14:40:04,883 - INFO - Epoch 2700 completed. Loss: 0.8262
+2024-10-01 14:40:36,076 - INFO - Epoch 2800 completed. Loss: 0.8384
+2024-10-01 14:41:12,890 - INFO - Epoch 2900 completed. Loss: 0.7958
+2024-10-01 14:41:41,716 - INFO - Epoch 3000 completed. Loss: 0.7712
+2024-10-01 14:42:10,979 - INFO - Epoch 3100 completed. Loss: 0.8039
+2024-10-01 14:42:45,651 - INFO - Epoch 3200 completed. Loss: 0.7838
+2024-10-01 14:43:21,618 - INFO - Epoch 3300 completed. Loss: 0.7729
+2024-10-01 14:43:51,522 - INFO - Epoch 3400 completed. Loss: 0.7790
+2024-10-01 14:44:29,880 - INFO - Epoch 3500 completed. Loss: 0.7846
+2024-10-01 14:44:55,732 - INFO - Epoch 3600 completed. Loss: 0.7531
+2024-10-01 14:45:31,982 - INFO - Epoch 3700 completed. Loss: 0.7796
+2024-10-01 14:46:06,638 - INFO - Epoch 3800 completed. Loss: 0.7751
+2024-10-01 14:46:31,348 - INFO - Epoch 3900 completed. Loss: 0.8093
+2024-10-01 14:47:02,736 - INFO - Epoch 4000 completed. Loss: 0.7532
+2024-10-01 14:47:35,433 - INFO - Epoch 4100 completed. Loss: 0.7607
+2024-10-01 14:48:11,051 - INFO - Epoch 4200 completed. Loss: 0.7642
+2024-10-01 14:48:47,327 - INFO - Epoch 4300 completed. Loss: 0.7816
+2024-10-01 14:49:22,508 - INFO - Epoch 4400 completed. Loss: 0.7523
+2024-10-01 14:49:59,755 - INFO - Epoch 4500 completed. Loss: 0.7654
+2024-10-01 14:50:37,872 - INFO - Epoch 4600 completed. Loss: 0.7470
+2024-10-01 14:51:08,224 - INFO - Epoch 4700 completed. Loss: 0.7194
+2024-10-01 14:51:42,776 - INFO - Epoch 4800 completed. Loss: 0.7701
+2024-10-01 14:52:15,017 - INFO - Epoch 4900 completed. Loss: 0.7780
+2024-10-01 14:52:49,589 - INFO - Epoch 5000 completed. Loss: 0.6979
+2024-10-01 14:52:49,589 - INFO - Stage 4: Preparing data for classification...
+2024-10-01 14:52:49,592 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-10-01 14:52:49,708 - INFO - Bulk tensor saved to result/Metabric_20241001_142435/bulk_tensor.pt
+2024-10-01 14:52:49,708 - INFO - Embeddings saved to result/Metabric_20241001_142435/embedding.pt
+2024-10-01 14:52:49,708 - INFO - Stage 6: Evaluate survival
+2024-10-01 14:52:49,709 - INFO - Preparing Cox model
+2024-10-01 14:52:49,721 - INFO - Training Cox model on bulk data...
+2024-10-01 14:56:21,989 - INFO - Cox Model Summary:
+2024-10-01 14:56:22,020 - INFO - 
+               coef  exp(coef)  se(coef)  coef lower 95%  coef upper 95%  ...  exp(coef) upper 95%  cmp to         z         p  -log2(p)
+covariate                                                                 ...                                                           
+0          0.617860   1.854955  1.900631       -3.107308        4.343029  ...            76.940217     0.0  0.325082  0.745119  0.424457
+1          0.017521   1.017676  1.512906       -2.947719        2.982762  ...            19.742265     0.0  0.011581  0.990760  0.013393
+2          0.789944   2.203274  1.817604       -2.772495        4.352384  ...            77.663361     0.0  0.434607  0.663847  0.591076
+3         -2.416579   0.089226  3.548924       -9.372341        4.539184  ...            93.614361     0.0 -0.680933  0.495914  1.011838
+4         -0.151954   0.859028  1.375188       -2.847272        2.543365  ...            12.722405     0.0 -0.110497  0.912016  0.132870
+...             ...        ...       ...             ...             ...  ...                  ...     ...       ...       ...       ...
+1366      -0.193540   0.824037  1.979962       -4.074194        3.687115  ...            39.929474     0.0 -0.097749  0.922132  0.116956
+1367       0.243862   1.276168  1.576640       -2.846297        3.334020  ...            28.050875     0.0  0.154672  0.877080  0.189219
+1368      -1.902232   0.149235  2.579376       -6.957715        3.153251  ...            23.412059     0.0 -0.737478  0.460832  1.117688
+1369      -0.214745   0.806747  2.370360       -4.860566        4.431076  ...            84.021745     0.0 -0.090596  0.927814  0.108093
+1370       0.812734   2.254063  1.484339       -2.096516        3.721985  ...            41.346374     0.0  0.547540  0.584008  0.775940
+
+[1371 rows x 11 columns]
+2024-10-01 14:56:22,043 - INFO - Concordance Index: 0.9316
+2024-10-01 14:56:22,080 - INFO - Test Concordance Index: 0.5227
+2024-10-01 14:56:22,080 - INFO - Preparing Cox model for Barlow Twins embeddings...
+2024-10-01 14:56:22,099 - INFO - Training Cox model on Barlow Twins embeddings...
+2024-10-01 14:56:22,747 - INFO - Cox Model Summary:
+2024-10-01 14:56:22,777 - INFO - 
+                coef     exp(coef)   se(coef)  coef lower 95%  coef upper 95%  ...  exp(coef) upper 95%  cmp to         z         p  -log2(p)
+covariate                                                                      ...                                                           
+0          -9.144701      0.000107  52.277467     -111.606654       93.317252  ...         3.366415e+40     0.0 -0.174926  0.861138  0.215684
+1         -13.439780      0.000001  63.121040     -137.154745      110.275185  ...         7.796583e+47     0.0 -0.212921  0.831389  0.266405
+2           7.886725   2661.712633  67.906978     -125.208506      140.981957  ...         1.689218e+61     0.0  0.116140  0.907541  0.139964
+3           2.647776     14.122597  54.178744     -103.540610      108.836163  ...         1.849034e+47     0.0  0.048871  0.961022  0.057359
+4          -7.129025      0.000802  59.827932     -124.389618      110.131567  ...         6.753544e+47     0.0 -0.119159  0.905150  0.143772
+...              ...           ...        ...             ...             ...  ...                  ...     ...       ...       ...       ...
+59         10.398576  32812.864981  62.723620     -112.537460      133.334612  ...         8.062808e+57     0.0  0.165784  0.868327  0.203690
+60          0.457402      1.579963  52.408192     -102.260767      103.175570  ...         6.435477e+44     0.0  0.008728  0.993036  0.010081
+61          1.020683      2.775089  58.222374     -113.093074      115.134440  ...         1.005198e+50     0.0  0.017531  0.986013  0.020321
+62         -3.305815      0.036669  72.633847     -145.665540      139.053910  ...         2.456663e+60     0.0 -0.045513  0.963698  0.053347
+63          3.415263     30.424959  68.008792     -129.879519      136.710046  ...         2.357320e+59     0.0  0.050218  0.959949  0.058971
+
+[64 rows x 11 columns]
+2024-10-01 14:56:22,800 - INFO - Concordance Index: 0.6178
+2024-10-01 14:56:22,811 - INFO - Test Concordance Index: 0.5415
+2024-10-01 14:56:22,811 - INFO - All stages completed.

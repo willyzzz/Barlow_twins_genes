@@ -1,0 +1,126 @@
+2024-09-30 18:23:07,291 - INFO - Using device: cuda
+2024-09-30 18:23:07,291 - INFO - Stage 1: Loading data...
+2024-09-30 18:23:47,259 - INFO - Number of classes: 5
+2024-09-30 18:23:47,259 - INFO - Stage 2: Initializing models...
+2024-09-30 18:23:47,284 - INFO - Configuration Parameters:
+2024-09-30 18:23:47,284 - INFO - seed: 42
+2024-09-30 18:23:47,284 - INFO - batchsize: 128
+2024-09-30 18:23:47,284 - INFO - sample_size: 1000
+2024-09-30 18:23:47,284 - INFO - lambda_noise: 0.5
+2024-09-30 18:23:47,284 - INFO - variance_threshold: 0.6
+2024-09-30 18:23:47,284 - INFO - output_dim: 64
+2024-09-30 18:23:47,284 - INFO - project_dim: 128
+2024-09-30 18:23:47,284 - INFO - mlp_hidden_dim: 64
+2024-09-30 18:23:47,284 - INFO - learning_rate: 0.0001
+2024-09-30 18:23:47,284 - INFO - weight_decay: 0.001
+2024-09-30 18:23:47,284 - INFO - num_epochs: 5
+2024-09-30 18:23:47,284 - INFO - mlp_epochs: 5000
+2024-09-30 18:23:47,284 - INFO - loss_lambda_param: 0.005
+2024-09-30 18:23:47,284 - INFO - scaling_method: minmax
+2024-09-30 18:23:47,284 - INFO - eval_metric: survival
+2024-09-30 18:23:47,284 - INFO - model_save_path: ./model_checkpoints
+2024-09-30 18:23:47,284 - INFO - fra_save_path: ./fra_pre
+2024-09-30 18:23:47,284 - INFO - training_dataset_name: All
+2024-09-30 18:23:47,284 - INFO - testing_dataset_name: Metabric
+2024-09-30 18:23:47,285 - INFO - device: cuda
+2024-09-30 18:23:47,285 - INFO - sc_path: ./cancer_single_cell_data/processed_data.h5ad
+2024-09-30 18:23:47,285 - INFO - bulk_path: ./cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-09-30 18:23:47,285 - INFO - stage_path: ./cancer_brca_metabric_bulk_data/Tumor_Stage.txt
+2024-09-30 18:23:47,285 - INFO - survival_path: ./Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt
+2024-09-30 18:23:47,285 - INFO - Model Architectures:
+2024-09-30 18:23:47,285 - INFO - Encoder: Encoder(
+  (layers): Sequential(
+    (0): Linear(in_features=866, out_features=2048, bias=True)
+    (1): BatchNorm1d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=2048, out_features=1024, bias=True)
+    (5): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): Dropout(p=0.2, inplace=False)
+    (8): Linear(in_features=1024, out_features=512, bias=True)
+    (9): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (10): ReLU()
+    (11): Dropout(p=0.2, inplace=False)
+    (12): Linear(in_features=512, out_features=256, bias=True)
+    (13): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (14): ReLU()
+    (15): Dropout(p=0.2, inplace=False)
+    (16): Linear(in_features=256, out_features=64, bias=True)
+  )
+)
+2024-09-30 18:23:47,285 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): Linear(in_features=512, out_features=128, bias=True)
+  )
+)
+2024-09-30 18:23:47,285 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=866, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-30 18:23:47,285 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-09-30 18:23:47,285 - INFO - Stage 3: Training Barlow Twins...
+2024-09-30 18:23:49,066 - INFO - Stage 4: Preparing data for classification...
+2024-09-30 18:23:49,068 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-09-30 18:23:49,148 - INFO - Bulk tensor saved to result/Metabric_20240930_182307/bulk_tensor.pt
+2024-09-30 18:23:49,148 - INFO - Embeddings saved to result/Metabric_20240930_182307/embedding.pt
+2024-09-30 18:23:49,148 - INFO - Stage 6: Evaluate survival
+2024-09-30 18:23:49,148 - INFO - Preparing Cox model
+2024-09-30 18:23:49,157 - INFO - Training Cox model on bulk data...
+2024-09-30 18:26:15,598 - INFO - Cox Model Summary:
+2024-09-30 18:26:15,632 - INFO - 
+               coef  exp(coef)  se(coef)  coef lower 95%  coef upper 95%  ...  exp(coef) upper 95%  cmp to         z         p  -log2(p)
+covariate                                                                 ...                                                           
+0          0.745081   2.106612  1.210776       -1.627996        3.118158  ...            22.604707     0.0  0.615375  0.538307  0.893499
+1          0.621586   1.861878  1.064223       -1.464253        2.707424  ...            14.990614     0.0  0.584075  0.559170  0.838641
+2          2.687319  14.692232  1.549784       -0.350202        5.724840  ...           306.384192     0.0  1.733996  0.082919  3.592156
+3         -1.714006   0.180143  1.273721       -4.210453        0.782441  ...             2.186804     0.0 -1.345668  0.178410  2.486736
+4         -0.430879   0.649938  0.905492       -2.205611        1.343853  ...             3.833786     0.0 -0.475851  0.634181  0.657034
+...             ...        ...       ...             ...             ...  ...                  ...     ...       ...       ...       ...
+861       -3.571825   0.028105  2.339148       -8.156471        1.012822  ...             2.753359     0.0 -1.526977  0.126767  2.979751
+862       -0.945452   0.388504  1.954561       -4.776322        2.885418  ...            17.911044     0.0 -0.483716  0.628588  0.669814
+863       -1.147777   0.317341  0.944979       -2.999902        0.704348  ...             2.022528     0.0 -1.214606  0.224517  2.155106
+864       -0.880277   0.414668  1.443230       -3.708957        1.948402  ...             7.017467     0.0 -0.609935  0.541905  0.883889
+865        0.470413   1.600655  0.926687       -1.345860        2.286685  ...             9.842261     0.0  0.507629  0.611714  0.709071
+
+[866 rows x 11 columns]
+2024-09-30 18:26:15,655 - INFO - Concordance Index: 0.9037
+2024-09-30 18:26:15,681 - INFO - Test Concordance Index: 0.5636
+2024-09-30 18:26:15,682 - INFO - Preparing Cox model for Barlow Twins embeddings...
+2024-09-30 18:26:15,700 - INFO - Training Cox model on Barlow Twins embeddings...
+2024-09-30 18:26:16,152 - INFO - Cox Model Summary:
+2024-09-30 18:26:16,180 - INFO - 
+               coef  exp(coef)  se(coef)  coef lower 95%  coef upper 95%  ...  exp(coef) upper 95%  cmp to         z         p  -log2(p)
+covariate                                                                 ...                                                           
+0         -0.445482   0.640516  0.271656       -0.977917        0.086954  ...             1.090846     0.0 -1.639877  0.101031  3.307133
+1         -0.305919   0.736446  0.270746       -0.836571        0.224733  ...             1.251989     0.0 -1.129911  0.258514  1.951688
+2          0.295969   1.344428  0.255388       -0.204582        0.796520  ...             2.217809     0.0  1.158899  0.246498  2.020355
+3          0.175997   1.192434  0.235306       -0.285195        0.637188  ...             1.891155     0.0  0.747947  0.454492  1.137673
+4         -0.134772   0.873915  0.257466       -0.639397        0.369853  ...             1.447521     0.0 -0.523455  0.600658  0.735384
+...             ...        ...       ...             ...             ...  ...                  ...     ...       ...       ...       ...
+59         0.005763   1.005780  0.236129       -0.457041        0.468568  ...             1.597705     0.0  0.024407  0.980528  0.028370
+60        -0.053766   0.947654  0.237857       -0.519957        0.412425  ...             1.510476     0.0 -0.226045  0.821167  0.284253
+61         0.643905   1.903901  0.276632        0.101717        1.186093  ...             3.274263     0.0  2.327663  0.019930  5.648915
+62        -0.722074   0.485744  0.280145       -1.271148       -0.173001  ...             0.841137     0.0 -2.577504  0.009952  6.650847
+63         0.112948   1.119574  0.282533       -0.440807        0.666703  ...             1.947804     0.0  0.399768  0.689327  0.536739
+
+[64 rows x 11 columns]
+2024-09-30 18:26:16,204 - INFO - Concordance Index: 0.6388
+2024-09-30 18:26:16,215 - INFO - Test Concordance Index: 0.5690
+2024-09-30 18:26:16,216 - INFO - All stages completed.
