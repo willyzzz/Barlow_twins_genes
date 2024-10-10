@@ -1,0 +1,196 @@
+2024-10-10 15:07:20,066 - INFO - Using device: cuda
+2024-10-10 15:07:20,066 - INFO - Stage 1: Loading data...
+2024-10-10 15:32:05,361 - INFO - Number of classes: 5
+2024-10-10 15:32:05,361 - INFO - Stage 2: Initializing models...
+2024-10-10 15:32:05,375 - INFO - Configuration Parameters:
+2024-10-10 15:32:05,375 - INFO - seed: 42
+2024-10-10 15:32:05,375 - INFO - batchsize: 128
+2024-10-10 15:32:05,375 - INFO - sample_size: 1000
+2024-10-10 15:32:05,375 - INFO - lambda_noise: 0.1
+2024-10-10 15:32:05,375 - INFO - variance_threshold: 0.9
+2024-10-10 15:32:05,375 - INFO - output_dim: 64
+2024-10-10 15:32:05,375 - INFO - hidden_dim: 256
+2024-10-10 15:32:05,375 - INFO - project_dim: 256
+2024-10-10 15:32:05,375 - INFO - mlp_hidden_dim: 64
+2024-10-10 15:32:05,375 - INFO - learning_rate: 0.0001
+2024-10-10 15:32:05,375 - INFO - weight_decay: 0.001
+2024-10-10 15:32:05,376 - INFO - num_epochs: 5000
+2024-10-10 15:32:05,376 - INFO - mlp_epochs: 5000
+2024-10-10 15:32:05,376 - INFO - loss_lambda_param: 0.005
+2024-10-10 15:32:05,376 - INFO - scaling_method: minmax
+2024-10-10 15:32:05,376 - INFO - eval_metric: survival
+2024-10-10 15:32:05,376 - INFO - model_save_path: ./model_checkpoints
+2024-10-10 15:32:05,376 - INFO - fra_save_path: ./fra_pre
+2024-10-10 15:32:05,376 - INFO - training_dataset_name: All
+2024-10-10 15:32:05,376 - INFO - testing_dataset_name: Metabric
+2024-10-10 15:32:05,376 - INFO - device: cuda
+2024-10-10 15:32:05,376 - INFO - sc_path: ../cancer_single_cell_data/processed_data_2000.h5ad
+2024-10-10 15:32:05,376 - INFO - bulk_path: ../cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt
+2024-10-10 15:32:05,376 - INFO - stage_path: ../cancer_brca_metabric_bulk_data/Tumor_Stage.txt
+2024-10-10 15:32:05,376 - INFO - survival_path: ../Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt
+2024-10-10 15:32:05,376 - INFO - Model Architectures:
+2024-10-10 15:32:05,376 - INFO - Encoder: GeneResNetEncoder(
+  (initial_layer): Sequential(
+    (0): Linear(in_features=1078, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+  )
+  (layer1): Sequential(
+    (0): GeneResNetBlock(
+      (fc1): Linear(in_features=512, out_features=128, bias=True)
+      (bn1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc2): Linear(in_features=128, out_features=128, bias=True)
+      (bn2): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc3): Linear(in_features=128, out_features=512, bias=True)
+      (bn3): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (1): GeneResNetBlock(
+      (fc1): Linear(in_features=512, out_features=128, bias=True)
+      (bn1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc2): Linear(in_features=128, out_features=128, bias=True)
+      (bn2): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc3): Linear(in_features=128, out_features=512, bias=True)
+      (bn3): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+  )
+  (layer2): Sequential(
+    (0): GeneResNetBlock(
+      (fc1): Linear(in_features=512, out_features=64, bias=True)
+      (bn1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc2): Linear(in_features=64, out_features=64, bias=True)
+      (bn2): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc3): Linear(in_features=64, out_features=256, bias=True)
+      (bn3): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (downsample): Sequential(
+        (0): Linear(in_features=512, out_features=256, bias=True)
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): GeneResNetBlock(
+      (fc1): Linear(in_features=256, out_features=64, bias=True)
+      (bn1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc2): Linear(in_features=64, out_features=64, bias=True)
+      (bn2): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc3): Linear(in_features=64, out_features=256, bias=True)
+      (bn3): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+  )
+  (layer3): Sequential(
+    (0): GeneResNetBlock(
+      (fc1): Linear(in_features=256, out_features=32, bias=True)
+      (bn1): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc2): Linear(in_features=32, out_features=32, bias=True)
+      (bn2): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc3): Linear(in_features=32, out_features=128, bias=True)
+      (bn3): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (downsample): Sequential(
+        (0): Linear(in_features=256, out_features=128, bias=True)
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): GeneResNetBlock(
+      (fc1): Linear(in_features=128, out_features=32, bias=True)
+      (bn1): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc2): Linear(in_features=32, out_features=32, bias=True)
+      (bn2): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc3): Linear(in_features=32, out_features=128, bias=True)
+      (bn3): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+  )
+  (fc): Sequential(
+    (0): Linear(in_features=128, out_features=64, bias=True)
+    (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  )
+)
+2024-10-10 15:32:05,376 - INFO - Projector: Projector(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=256, bias=False)
+    (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): Linear(in_features=256, out_features=256, bias=False)
+    (4): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+    (6): Linear(in_features=256, out_features=256, bias=False)
+    (7): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=True)
+  )
+)
+2024-10-10 15:32:05,376 - INFO - MLP Bulk: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=1078, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-10 15:32:05,376 - INFO - MLP Embedded: MLPClassifier(
+  (layers): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=64, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=64, out_features=5, bias=True)
+  )
+)
+2024-10-10 15:32:05,376 - INFO - Stage 3: Training Barlow Twins...
+2024-10-10 15:32:52,344 - INFO - Epoch 100 completed. Loss: 3.1487
+2024-10-10 15:33:35,331 - INFO - Epoch 200 completed. Loss: 2.9128
+2024-10-10 15:34:22,220 - INFO - Epoch 300 completed. Loss: 2.8167
+2024-10-10 15:35:08,949 - INFO - Epoch 400 completed. Loss: 2.7744
+2024-10-10 15:35:58,717 - INFO - Epoch 500 completed. Loss: 2.7218
+2024-10-10 15:36:48,157 - INFO - Epoch 600 completed. Loss: 2.6995
+2024-10-10 15:37:38,640 - INFO - Epoch 700 completed. Loss: 2.6541
+2024-10-10 15:38:32,915 - INFO - Epoch 800 completed. Loss: 2.6428
+2024-10-10 15:39:24,584 - INFO - Epoch 900 completed. Loss: 2.6132
+2024-10-10 15:40:11,702 - INFO - Epoch 1000 completed. Loss: 2.6062
+2024-10-10 15:40:57,084 - INFO - Epoch 1100 completed. Loss: 2.5798
+2024-10-10 15:41:50,563 - INFO - Epoch 1200 completed. Loss: 2.5551
+2024-10-10 15:42:44,411 - INFO - Epoch 1300 completed. Loss: 2.5545
+2024-10-10 15:43:39,651 - INFO - Epoch 1400 completed. Loss: 2.5418
+2024-10-10 15:44:32,239 - INFO - Epoch 1500 completed. Loss: 2.4938
+2024-10-10 15:45:26,321 - INFO - Epoch 1600 completed. Loss: 2.4978
+2024-10-10 15:46:13,746 - INFO - Epoch 1700 completed. Loss: 2.5070
+2024-10-10 15:47:04,175 - INFO - Epoch 1800 completed. Loss: 2.4654
+2024-10-10 15:47:54,564 - INFO - Epoch 1900 completed. Loss: 2.4677
+2024-10-10 15:48:40,017 - INFO - Epoch 2000 completed. Loss: 2.4342
+2024-10-10 15:49:23,937 - INFO - Epoch 2100 completed. Loss: 2.4356
+2024-10-10 15:50:14,797 - INFO - Epoch 2200 completed. Loss: 2.4157
+2024-10-10 15:51:02,370 - INFO - Epoch 2300 completed. Loss: 2.4044
+2024-10-10 15:51:54,061 - INFO - Epoch 2400 completed. Loss: 2.3755
+2024-10-10 15:52:37,051 - INFO - Epoch 2500 completed. Loss: 2.3700
+2024-10-10 15:53:27,407 - INFO - Epoch 2600 completed. Loss: 2.3557
+2024-10-10 15:54:14,759 - INFO - Epoch 2700 completed. Loss: 2.3388
+2024-10-10 15:55:08,730 - INFO - Epoch 2800 completed. Loss: 2.3225
+2024-10-10 15:55:55,584 - INFO - Epoch 2900 completed. Loss: 2.3319
+2024-10-10 15:56:43,448 - INFO - Epoch 3000 completed. Loss: 2.2944
+2024-10-10 15:57:31,234 - INFO - Epoch 3100 completed. Loss: 2.2990
+2024-10-10 15:58:19,835 - INFO - Epoch 3200 completed. Loss: 2.2652
+2024-10-10 15:59:11,181 - INFO - Epoch 3300 completed. Loss: 2.2712
+2024-10-10 16:00:02,194 - INFO - Epoch 3400 completed. Loss: 2.2450
+2024-10-10 16:00:49,330 - INFO - Epoch 3500 completed. Loss: 2.2316
+2024-10-10 16:01:40,539 - INFO - Epoch 3600 completed. Loss: 2.2258
+2024-10-10 16:02:33,298 - INFO - Epoch 3700 completed. Loss: 2.2297
+2024-10-10 16:03:20,871 - INFO - Epoch 3800 completed. Loss: 2.2101
+2024-10-10 16:04:14,239 - INFO - Epoch 3900 completed. Loss: 2.2066
+2024-10-10 16:05:06,674 - INFO - Epoch 4000 completed. Loss: 2.1660
+2024-10-10 16:05:54,986 - INFO - Epoch 4100 completed. Loss: 2.1772
+2024-10-10 16:06:47,517 - INFO - Epoch 4200 completed. Loss: 2.1881
+2024-10-10 16:07:45,321 - INFO - Epoch 4300 completed. Loss: 2.1705
+2024-10-10 16:08:36,154 - INFO - Epoch 4400 completed. Loss: 2.1551
+2024-10-10 16:09:24,950 - INFO - Epoch 4500 completed. Loss: 2.1147
+2024-10-10 16:10:14,297 - INFO - Epoch 4600 completed. Loss: 2.1141
+2024-10-10 16:11:03,024 - INFO - Epoch 4700 completed. Loss: 2.1084
+2024-10-10 16:11:51,849 - INFO - Epoch 4800 completed. Loss: 2.1119
+2024-10-10 16:12:40,353 - INFO - Epoch 4900 completed. Loss: 2.0908
+2024-10-10 16:13:26,380 - INFO - Epoch 5000 completed. Loss: 2.0973
+2024-10-10 16:13:26,380 - INFO - Stage 4: Preparing data for classification...
+2024-10-10 16:13:26,382 - INFO - Stage 5: Generating Barlow Twins embeddings...
+2024-10-10 16:13:26,452 - INFO - Bulk tensor saved to ../result/Metabric_20241010_150720/bulk_tensor.pt
+2024-10-10 16:13:26,452 - INFO - Embeddings saved to ../result/Metabric_20241010_150720/embedding.pt
+2024-10-10 16:13:26,452 - INFO - All stages completed.
