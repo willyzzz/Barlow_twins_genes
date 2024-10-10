@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 
 def setup_logging(testing_dataset_name):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_dir = os.path.join("log", testing_dataset_name)
+    log_dir = os.path.join("..","log", testing_dataset_name)
     os.makedirs(log_dir, exist_ok=True)  # 确保目录存在
     log_file = os.path.join(log_dir, f"run_{timestamp}.log")
     
@@ -83,14 +83,14 @@ def main():
             logging.info(f"Epoch {epoch + 1} completed. Loss: {epoch_loss:.4f}")
 
     # Plot loss curve
-    plt.figure(figsize=(10, 5))
-    plt.plot(range(1, config['num_epochs'] + 1), losses, label='Training Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.title('Barlow Twins Loss Curve')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    # plt.figure(figsize=(10, 5))
+    # plt.plot(range(1, config['num_epochs'] + 1), losses, label='Training Loss')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Loss')
+    # plt.title('Barlow Twins Loss Curve')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
 
     logging.info("Stage 4: Preparing data for classification...")
     X = bulk_tensor.to(device)
@@ -102,7 +102,7 @@ def main():
         X_embedded = encoder(X)
     
     # Save embeddings and bulk tensor
-    result_dir = os.path.join("result", f"{testing_dataset_name}_{timestamp}")
+    result_dir = os.path.join("..", "result", f"{testing_dataset_name}_{timestamp}")
     os.makedirs(result_dir, exist_ok=True)
     bulk_tensor_df = pd.DataFrame(bulk_tensor.cpu().numpy(), index = bulk_df.index)
     embedding_df = pd.DataFrame(X_embedded.cpu().numpy(), index= bulk_df.index)

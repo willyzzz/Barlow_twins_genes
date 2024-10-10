@@ -6,7 +6,7 @@ config = {
     'batchsize': 128,
     'sample_size' : 1000,
     'lambda_noise': 0.1,
-    'variance_threshold': 0.95,
+    'variance_threshold': 0.9,
     'output_dim': 64,
     'hidden_dim': 256,
     'project_dim': 256,
@@ -23,10 +23,10 @@ config = {
     'training_dataset_name': 'All',
     'testing_dataset_name': 'Metabric',
     'device': device,
-    'sc_path': './cancer_single_cell_data/processed_data.h5ad',
-    'bulk_path': './cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt',
-    'stage_path': './cancer_brca_metabric_bulk_data/Tumor_Stage.txt',
-    'survival_path': './Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt'
+    'sc_path': '../cancer_single_cell_data/processed_data_2000.h5ad',
+    'bulk_path': '../cancer_brca_metabric_bulk_data/data_mrna_illumina_microarray_zscores_ref_diploid_samples.txt',
+    'stage_path': '../cancer_brca_metabric_bulk_data/Tumor_Stage.txt',
+    'survival_path': '../Synapse_metabric/Clinical_Overall_Survival_Data_from_METABRIC.txt'
 }
 
 

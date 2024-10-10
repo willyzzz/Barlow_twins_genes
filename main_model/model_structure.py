@@ -107,8 +107,8 @@ class GeneResNetEncoder(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(128, output_dim),
             nn.BatchNorm1d(output_dim),
-            nn.ReLU(inplace=True),
-            nn.Dropout(dropout_rate),
+            # nn.ReLU(inplace=True),
+            # nn.Dropout(dropout_rate),
         )
 
     def _make_layer(self, in_features, mid_features, expansion=4, num_blocks=2):

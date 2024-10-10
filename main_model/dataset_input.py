@@ -12,6 +12,7 @@ from sklearn.feature_selection import VarianceThreshold
 import matplotlib.pyplot as plt
 import seaborn as sns
 from barlow_config import *
+import magic
 
 def set_seed(seed_value):
     torch.manual_seed(seed_value)
@@ -253,7 +254,8 @@ def Barlow_dataloader(sc_path, bulk_path, stage_path, survival_path, batchsize):
     cell_names = sc_data.obs_names
     gene_names = sc_data.var['feature_name']
     sc_data_exp = sc_data.X.toarray()
-    sc_df = pd.DataFrame(sc_data_exp, index=cell_names, columns=gene_names)
+    magic_op = magic.MAGIC()
+    sc_df = pd.DataFrame(magic_op.fit_transform(sc_data_exp), index=cell_names, columns=gene_names)
     survival_df = pd.read_csv(survival_path, sep=',', index_col=0)
     print(f" Single-cell data loaded. Shape: {sc_df.shape}")
 
@@ -280,9 +282,12 @@ def Barlow_dataloader(sc_path, bulk_path, stage_path, survival_path, batchsize):
 
     common_genes = sc_df.columns.intersection(bulk.columns)
     sc_df = sc_df.loc[:, ~sc_df.columns.duplicated()]
+
     bulk = bulk.loc[:, ~bulk.columns.duplicated()]
     sc_df = sc_df[common_genes]
     bulk = bulk[common_genes]
+
+    sc_df = np.log1p(sc_df)
 
     # Filter bulk data based on evaluation metric
     if config['eval_metric'] == 'stage':
@@ -296,14 +301,14 @@ def Barlow_dataloader(sc_path, bulk_path, stage_path, survival_path, batchsize):
     # Step 2: Filter genes by variance
     bulk_filtered, sampled_filtered, selected_genes = filter_genes_by_variance(bulk_scaled, sampled_scaled, variance_threshold=config['variance_threshold'])
 
-    plot_bulk_vs_sampled_distribution(bulk_filtered, sampled_filtered, feature_indices=None, bins=50)
+    # plot_bulk_vs_sampled_distribution(bulk_filtered, sampled_filtered, feature_indices=None, bins=50)
 
     # Step 3: Generate distortions with different sampled single cells each time
     distortion1 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=config['lambda_noise'], sample_size=config['sample_size'])
     distortion2 = generate_distortions(bulk_filtered, sampled_filtered, lambda_noise=config['lambda_noise'], sample_size=config['sample_size'])
     print("Distortions generated.")
 
-    plot_bulk_vs_distortion_distribution(bulk_filtered, distortion1, distortion2)
+    # plot_bulk_vs_distortion_distribution(bulk_filtered, distortion1, distortion2)
 
     # Convert to tensors while keeping the original index
     bulk_tensor = torch.tensor(bulk_filtered, dtype=torch.float32)
